@@ -103,7 +103,7 @@ public class M04_GLEventListener implements GLEventListener {
 
   private Camera camera;
   //private Mat4 perspective;
-  private Floor floor;
+  private Room floor;
   private Light light;
   //private SGNode robotRoot;
   
@@ -133,7 +133,7 @@ public class M04_GLEventListener implements GLEventListener {
     // Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
     // floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, textures.get("chequerboard"));
 
-    floor = new Floor(gl, 16f,16f, camera, light, textures.get("chequerboard"));
+    floor = new Room(gl, 16f,16f, camera, light, textures.get("chequerboard"));
     
     robot = new Robot(gl, camera, light, 
                       textures.get("jade_diffuse"), textures.get("jade_specular"),
