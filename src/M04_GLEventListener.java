@@ -27,6 +27,8 @@ public class M04_GLEventListener implements GLEventListener {
     gl.glFrontFace(GL.GL_CCW);    // default is 'CCW'
     gl.glEnable(GL.GL_CULL_FACE); // default is 'not enabled'
     gl.glCullFace(GL.GL_BACK);   // default is 'back', assuming CCW
+    gl.glEnable(GL2.GL_BLEND);
+    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
     initialise(gl);
     startTime = getSeconds();
   }
@@ -120,6 +122,8 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "container_specular", "assets/textures/container2_specular.jpg");
     textures.add(gl, "watt_diffuse", "assets/textures/wattBook.jpg");
     textures.add(gl, "watt_specular", "assets/textures/wattBook_specular.jpg");
+    textures.add(gl, "watt", "assets/textures/wattBook.jpg");
+    textures.add(gl, "window", "assets/textures/window.png");
     
     light = new Light(gl);
     light.setCamera(camera);
@@ -128,12 +132,12 @@ public class M04_GLEventListener implements GLEventListener {
 
     // String name = "floor";
     // Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
-    // Shader shader = new Shader(gl, "assets/shaders/vs_standard.txt", "assets/shaders/fs_standard_1t.txt");
+    // Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_1t.glsl");
     // Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     // Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
     // floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, textures.get("chequerboard"));
 
-    floor = new Room(gl, 16f,16f, camera, light, textures.get("chequerboard"));
+    floor = new Room(gl, 16f,16f, camera, light, textures);
     
     robot = new Robot(gl, camera, light, 
                       textures.get("jade_diffuse"), textures.get("jade_specular"),

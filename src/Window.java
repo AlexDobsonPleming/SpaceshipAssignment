@@ -11,7 +11,7 @@ import gmaths.Vec3;
  * @version   1.0 (31/08/2022)
  */
 
-public class Surface {
+public class Window {
 
   private Camera camera;
   private Light light;
@@ -19,12 +19,12 @@ public class Surface {
   private Model floor;
 
 
-  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
+  public Window(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
 
     camera = cameraIn;
     light = lightIn;
 
-    String name = "floor";
+    String name = "window";
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_1t.glsl");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);

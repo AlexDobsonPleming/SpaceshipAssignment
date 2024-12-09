@@ -28,8 +28,12 @@ struct Material {
 uniform Material material;
 
 void main() {
+  vec4 texture_colour = texture(first_texture, aTexCoord);
+
+  if (texture_colour.a < 0.1) discard;
+
   // ambient
-  vec3 ambient = light.ambient * texture(first_texture, aTexCoord).rgb;
+  vec3 ambient = light.ambient * texture_colour.rgb;
   
   // diffuse
   vec3 norm = normalize(aNormal);

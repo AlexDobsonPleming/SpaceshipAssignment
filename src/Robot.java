@@ -72,7 +72,7 @@ public class Robot {
   private Model makeSphere(GL3 gl, Texture t1, Texture t2) {
     String name= "sphere";
     Mesh mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-    Shader shader = new Shader(gl, "assets/shaders/vs_standard.txt", "assets/shaders/fs_standard_2t.txt");
+    Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_2t.glsl");
     Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
     Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
     Model sphere = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
@@ -82,7 +82,7 @@ public class Robot {
   private Model makeCube(GL3 gl, Texture t1, Texture t2) {
     String name= "cube";
     Mesh mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-    Shader shader = new Shader(gl, "assets/shaders/vs_standard.txt", "assets/shaders/fs_standard_2t.txt");
+    Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_2t.glsl");
     Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
     Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
     Model cube = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
