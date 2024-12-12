@@ -105,7 +105,7 @@ public class M04_GLEventListener implements GLEventListener {
 
   private Camera camera;
   //private Mat4 perspective;
-  private Room floor;
+  private Room room;
   private Light light;
   //private SGNode robotRoot;
   
@@ -137,7 +137,7 @@ public class M04_GLEventListener implements GLEventListener {
     // Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
     // floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, textures.get("chequerboard"));
 
-    floor = new Room(gl, 16f,16f, camera, light, textures);
+    room = new Room(gl, 16f,16f, camera, light, textures);
     
     robot = new Robot(gl, camera, light, 
                       textures.get("jade_diffuse"), textures.get("jade_specular"),
@@ -151,7 +151,7 @@ public class M04_GLEventListener implements GLEventListener {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
-    floor.render(gl); 
+    room.render(gl);
     if (animation) {
       double elapsedTime = getSeconds()-startTime;
       robot.updateAnimation(elapsedTime);
