@@ -1,186 +1,156 @@
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureIO;
-import gmaths.Mat4;
-import gmaths.Mat4Transform;
-import gmaths.Vec3;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.util.GLBuffers;
+import com.jogamp.opengl.util.texture.*;
+import gmaths.*; // Assuming your Mat4 and Shader classes are in this package
 
 import java.io.File;
-import java.nio.FloatBuffer;
-
-/**
- * This class stores the Floor
- *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
- */
 
 public class Skybox {
-  private float[] skyboxVertices = {
-          // positions
-          -1.0f,  1.0f, -1.0f,
-          -1.0f, -1.0f, -1.0f,
-          1.0f, -1.0f, -1.0f,
-          1.0f, -1.0f, -1.0f,
-          1.0f,  1.0f, -1.0f,
-          -1.0f,  1.0f, -1.0f,
 
-          -1.0f, -1.0f,  1.0f,
-          -1.0f, -1.0f, -1.0f,
-          -1.0f,  1.0f, -1.0f,
-          -1.0f,  1.0f, -1.0f,
-          -1.0f,  1.0f,  1.0f,
-          -1.0f, -1.0f,  1.0f,
+    private int cubemapTexture;
+    private int skyboxVAO;
+    private Shader shader;
 
-          1.0f, -1.0f, -1.0f,
-          1.0f, -1.0f,  1.0f,
-          1.0f,  1.0f,  1.0f,
-          1.0f,  1.0f,  1.0f,
-          1.0f,  1.0f, -1.0f,
-          1.0f, -1.0f, -1.0f,
+    public Skybox(GL3 gl) {
+        setupSkybox(gl);
+        cubemapTexture = loadCubemap(gl, new String[]{
+                "assets/textures/skybox/right.png",  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
+                "assets/textures/skybox/left.png",   // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+                "assets/textures/skybox/top.png",    // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+                "assets/textures/skybox/bottom.png", // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+                "assets/textures/skybox/front.png",  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+                "assets/textures/skybox/back.png"    // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+        });
 
-          -1.0f, -1.0f,  1.0f,
-          -1.0f,  1.0f,  1.0f,
-          1.0f,  1.0f,  1.0f,
-          1.0f,  1.0f,  1.0f,
-          1.0f, -1.0f,  1.0f,
-          -1.0f, -1.0f,  1.0f,
-
-          -1.0f,  1.0f, -1.0f,
-          1.0f,  1.0f, -1.0f,
-          1.0f,  1.0f,  1.0f,
-          1.0f,  1.0f,  1.0f,
-          -1.0f,  1.0f,  1.0f,
-          -1.0f,  1.0f, -1.0f,
-
-          -1.0f, -1.0f, -1.0f,
-          -1.0f, -1.0f,  1.0f,
-          1.0f, -1.0f, -1.0f,
-          1.0f, -1.0f, -1.0f,
-          -1.0f, -1.0f,  1.0f,
-          1.0f, -1.0f,  1.0f
-  };
-
-  private Texture loadTexture(GL3 gl3) {
-    // Step 1: Create and initialize the cubemap texture
-    Texture cubemap = new Texture(GL3.GL_TEXTURE_CUBE_MAP);
-
-    // Step 2: Set texture parameters using the Texture class
-    cubemap.setTexParameteri(gl3, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-    cubemap.setTexParameteri(gl3, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
-    cubemap.setTexParameteri(gl3, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-    cubemap.setTexParameteri(gl3, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
-    cubemap.setTexParameteri(gl3, GL3.GL_TEXTURE_WRAP_R, GL3.GL_CLAMP_TO_EDGE);
-
-    // Step 3: Load texture data for each face of the cubemap
-    String[] faces = {
-            "assets/textures/skybox/right.png",  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
-            "assets/textures/skybox/left.png",   // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
-            "assets/textures/skybox/top.png",    // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
-            "assets/textures/skybox/bottom.png", // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
-            "assets/textures/skybox/front.png",  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-            "assets/textures/skybox/back.png"    // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-    };
-
-    int[] cubeMapTargets = {
-            GL3.GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-            GL3.GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-            GL3.GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-            GL3.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-            GL3.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
-            GL3.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-    };
-    for (int i = 0; i < 6; i++) {
-      try {
-        // Load the image data for the current face
-        TextureData data = TextureIO.newTextureData(gl3.getGLProfile(), new File(faces[i]), false, "png");
-
-        // Upload texture data for the specific cubemap face
-        cubemap.updateImage(gl3, data, cubeMapTargets[i]);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+        shader = new Shader(gl, "assets/shaders/vs_skybox.glsl", "assets/shaders/fs_skybox.glsl");
+        shader.use(gl);
+        shader.setInt(gl, "skybox", 0);
     }
 
-    // Step 4: Bind the texture to GL_TEXTURE_CUBE_MAP
-    cubemap.bind(gl3);
+    private void setupSkybox(GL3 gl) {
+        float[] skyboxVertices = {
+                // Positions
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
 
-    return cubemap;
-  }
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
 
-  private Camera camera;
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
 
-  private Texture cubemap;
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
 
-  private int skyboxVAO;
-  private int skyboxVBO;
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
 
-  private Shader skyboxShader;
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f
+        };
 
-  public Skybox(GL3 gl, Camera cameraIn) {
-    camera = cameraIn;
+        int[] vbo = new int[1];
+        int[] vao = new int[1];
 
-    cubemap = loadTexture(gl);
+        gl.glGenBuffers(1, vbo, 0);
+        gl.glGenVertexArrays(1, vao, 0);
 
-    // Generate and bind VAO
-    int[] temp = new int[1];
-    gl.glGenVertexArrays(1, temp, 0);
-    skyboxVAO = temp[0];
-    gl.glBindVertexArray(skyboxVAO);
+        gl.glBindVertexArray(vao[0]);
 
-    // Generate and bind VBO
-    gl.glGenBuffers(1, temp, 0);
-    skyboxVBO = temp[0];
-    gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, skyboxVBO);
-    gl.glBufferData(GL3.GL_ARRAY_BUFFER, skyboxVertices.length * Float.BYTES,
-            FloatBuffer.wrap(skyboxVertices), GL3.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, skyboxVertices.length * 4, GLBuffers.newDirectFloatBuffer(skyboxVertices), GL.GL_STATIC_DRAW);
 
-    // Define vertex attribute
-    gl.glEnableVertexAttribArray(0);
-    gl.glVertexAttribPointer(0, 3, GL3.GL_FLOAT, false, 3 * Float.BYTES, 0);
+        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 3 * 4, 0);
 
-    // Unbind VAO and VBO
-    gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
-    gl.glBindVertexArray(0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+        gl.glBindVertexArray(0);
 
-    skyboxShader = new Shader(gl, "assets/shaders/vs_skybox.glsl", "assets/shaders/fs_skybox.glsl");
+        skyboxVAO = vao[0];
+    }
 
-  }
+    private int loadCubemap(GL3 gl, String[] faces) {
+        int[] textures = new int[1];
+        gl.glGenTextures(1, textures, 0);
 
-  public void renderSkybox(GL3 gl) {
-    int cubemapTexture = cubemap.getTextureObject(gl);
+        int textureID = textures[0];
+        gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, textureID);
 
-    Mat4 viewMatrix = camera.getViewMatrix();
-//    viewMatrix.set(0, 0, 0);
+        for (int i = 0; i < faces.length; i++) {
+            try {
+                File file = new File(faces[i]);
+                TextureData textureData = TextureIO.newTextureData(gl.getGLProfile(), file, false, null);
 
-    Mat4 projectionMatrix = new Mat4();
+                gl.glTexImage2D(
+                        GL3.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, // Target for cubemap face
+                        0,                                    // Mipmap level
+                        textureData.getInternalFormat(),      // Internal format
+                        textureData.getWidth(),               // Width
+                        textureData.getHeight(),              // Height
+                        0,                                    // Border (must be 0)
+                        textureData.getPixelFormat(),         // Format of pixel data
+                        textureData.getPixelType(),           // Data type of pixel data
+                        textureData.getBuffer()               // Buffer containing pixel data
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+        // Set texture parameters
+        gl.glTexParameteri(GL3.GL_TEXTURE_CUBE_MAP, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+        gl.glTexParameteri(GL3.GL_TEXTURE_CUBE_MAP, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+        gl.glTexParameteri(GL3.GL_TEXTURE_CUBE_MAP, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL3.GL_TEXTURE_CUBE_MAP, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL3.GL_TEXTURE_CUBE_MAP, GL3.GL_TEXTURE_WRAP_R, GL3.GL_CLAMP_TO_EDGE);
 
-    // Disable depth writing so the skybox is always in the background
-    gl.glDepthMask(false);
+        return textureID;
+    }
 
-    // Bind the skybox VAO
-    gl.glBindVertexArray(skyboxVAO);
+    public void render(GL3 gl, Mat4 view, Mat4 projection) {
+        gl.glDepthFunc(GL.GL_LEQUAL);
+        gl.glDepthMask(false);
 
-    // Use the skybox shader program
-    skyboxShader.use(gl);
-    skyboxShader.setFloatArray(gl, "view", viewMatrix.toFloatArrayForGLSL());
-    skyboxShader.setFloatArray(gl, "projection", projectionMatrix.toFloatArrayForGLSL());
-//    skyboxShader.setUniformMatrix4fv(gl, "view", viewMatrix);
-//    skyboxShader.setUniformMatrix4fv(gl, "projection", projectionMatrix);
+        shader.use(gl);
 
-    // Bind the cubemap texture
-    gl.glActiveTexture(GL3.GL_TEXTURE0);
-    gl.glBindTexture(GL3.GL_TEXTURE_CUBE_MAP, cubemapTexture);  //glTEXCUBEMAP is in the target param??
-    skyboxShader.setFloat(gl, "skybox", 0);
+        Mat4 viewWithoutTranslation = new Mat4(view);
+        viewWithoutTranslation.set(0, 3, 0);
+        viewWithoutTranslation.set(1, 3, 0);
+        viewWithoutTranslation.set(2, 3, 0);
+        shader.setFloatArray(gl, "view", viewWithoutTranslation.toFloatArrayForGLSL());
+        shader.setFloatArray(gl, "projection", projection.toFloatArrayForGLSL());
 
-    // Draw the skybox
-    gl.glDrawArrays(GL3.GL_TRIANGLES, 0, 36);
+        gl.glBindVertexArray(skyboxVAO);
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        gl.glDrawArrays(GL.GL_TRIANGLES, 0, 36);
+        gl.glBindVertexArray(0);
 
-    // Unbind VAO and re-enable depth writing
-    gl.glBindVertexArray(0);
-    gl.glDepthMask(true);
-  }
-
+        gl.glDepthFunc(GL.GL_LESS);
+        gl.glDepthMask(true);
+    }
 }
