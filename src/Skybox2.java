@@ -111,25 +111,19 @@ public class Skybox2 {
 
     // Bind skybox VAO
     gl.glBindVertexArray(skyboxVAO);
-    checkGLError(gl, "glBindVertexArray");
 
     // Bind cubemap texture
     gl.glActiveTexture(GL3.GL_TEXTURE0);
-    checkGLError(gl, "glActiveTexture");
     gl.glBindTexture(GL3.GL_TEXTURE_CUBE_MAP, cubemapTexture);
-    checkGLError(gl, "glBindTexture");
 
     // Draw skybox
     gl.glDrawArrays(GL3.GL_TRIANGLES, 0, 36);
-    checkGLError(gl, "glDrawArrays");
     gl.glBindVertexArray(0);
-    checkGLError(gl, "glBindVertexArray");
 
     gl.glDepthMask(true);
 
     // Unbind texture
     gl.glBindTexture(GL3.GL_TEXTURE_CUBE_MAP, 0);
-    checkGLError(gl, "glBindTexture");
   }
 
   private String getGLErrorString(int errorCode) {
@@ -156,11 +150,9 @@ public class Skybox2 {
   private int loadCubemap(GL3 gl, String[] faces) {
     int[] textures = new int[1];
     gl.glGenTextures(1, textures, 0);
-    checkGLError(gl, "glGenTextures");
 
     int textureID = textures[0];
     gl.glBindTexture(GL.GL_TEXTURE_CUBE_MAP, textureID);
-    checkGLError(gl, "glBindTexture");
 
     for (int i = 0; i < faces.length; i++) {
       try {

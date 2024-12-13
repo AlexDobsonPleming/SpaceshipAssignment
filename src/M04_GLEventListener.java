@@ -53,7 +53,6 @@ public class M04_GLEventListener implements GLEventListener {
     light.dispose(gl);
     //floor.dispose(gl);
     robot.dispose(gl);
-    skybox2.dispose(gl);
   }
   
   
@@ -106,7 +105,7 @@ public class M04_GLEventListener implements GLEventListener {
 
   private Camera camera;
   private Skybox skybox;
-  private Skybox2 skybox2;
+  private Skybox3 skybox2;
   //private Mat4 perspective;
   private Room room;
   private Light light;
@@ -132,9 +131,7 @@ public class M04_GLEventListener implements GLEventListener {
     light = new Light(gl);
     light.setCamera(camera);
 
-//    skybox = new Skybox(gl, camera);
-    skybox2 = new Skybox2();
-    skybox2.init(gl);
+    skybox2 = new Skybox3(gl);
     // floor
 
 
@@ -150,7 +147,7 @@ public class M04_GLEventListener implements GLEventListener {
   
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-    skybox2.render(gl, camera.getViewMatrix().toFloatArrayForGLSL(), camera.getPerspectiveMatrix().toFloatArrayForGLSL());
+    skybox2.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix());
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
     room.render(gl);
