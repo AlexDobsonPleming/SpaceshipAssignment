@@ -53,6 +53,7 @@ public class M04_GLEventListener implements GLEventListener {
     light.dispose(gl);
     //floor.dispose(gl);
     robot.dispose(gl);
+    skybox2.dispose(gl);
   }
   
   
@@ -104,12 +105,15 @@ public class M04_GLEventListener implements GLEventListener {
   private TextureLibrary textures;
 
   private Camera camera;
+  private Skybox skybox;
+  private Skybox2 skybox2;
   //private Mat4 perspective;
   private Room room;
   private Light light;
   //private SGNode robotRoot;
   
   private Robot robot;
+
 
   private void initialise(GL3 gl) {
     createRandomNumbers();
@@ -127,28 +131,26 @@ public class M04_GLEventListener implements GLEventListener {
     
     light = new Light(gl);
     light.setCamera(camera);
-    
+
+//    skybox = new Skybox(gl, camera);
+    skybox2 = new Skybox2();
+    skybox2.init(gl);
     // floor
 
-    // String name = "floor";
-    // Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
-    // Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_1t.glsl");
-    // Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
-    // Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
-    // floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, textures.get("chequerboard"));
 
     room = new Room(gl, 16f,16f, camera, light, textures);
     
     robot = new Robot(gl, camera, light, 
                       textures.get("jade_diffuse"), textures.get("jade_specular"),
                       textures.get("container_diffuse"), textures.get("container_specular"),
-                      textures.get("watt_diffuse"), textures.get("watt_specular")); 
+                      textures.get("watt_diffuse"), textures.get("watt_specular"));
   }
  
   // animation control of start stop is poor and needs improving
   
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+    skybox2.render(gl, camera.getViewMatrix().toFloatArrayForGLSL(), camera.getPerspectiveMatrix().toFloatArrayForGLSL());
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
     room.render(gl);
