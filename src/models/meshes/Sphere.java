@@ -1,6 +1,6 @@
 package models.meshes;
 
-public final class Sphere {
+public final class Sphere implements IMesh {
   
   // ***************************************************
   /* THE DATA
@@ -64,5 +64,14 @@ public final class Sphere {
     //  System.out.println(indices[i]+", "+indices[i+1]+", "+indices[i+2]);
     //}
   }
-  
+
+  @Override
+  public float[] getVertices() {
+    return vertices;
+  }
+
+  @Override
+  public int[] getIndices() {
+    return indices;
+  }
 }

@@ -1,6 +1,6 @@
 package models.meshes;
 
-public final class TwoTriangles {
+public final class TwoTriangles implements IMesh {
   
   // ***************************************************
   /* THE DATA
@@ -18,4 +18,13 @@ public final class TwoTriangles {
       0, 2, 3
   };
 
+  @Override
+  public float[] getVertices() {
+    return vertices;
+  }
+
+  @Override
+  public int[] getIndices() {
+    return indices;
+  }
 }

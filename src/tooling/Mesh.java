@@ -3,6 +3,7 @@ package tooling;
 import java.nio.*;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
+import models.meshes.IMesh;
 
 public class Mesh {
   
@@ -15,7 +16,10 @@ public class Mesh {
   private int[] vertexBufferId = new int[1];
   private int[] vertexArrayId = new int[1];
   private int[] elementBufferId = new int[1];
-  
+
+  public Mesh(GL3 gl, IMesh vertexData) {
+    this(gl, vertexData.getVertices(), vertexData.getIndices());
+  }
   public Mesh(GL3 gl, float[] vertices, int[] indices) {
     this.vertices = vertices;
     this.indices = indices;
