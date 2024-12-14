@@ -12,6 +12,10 @@ public class Cylinder implements IMesh {
     private List<Float> normals;
     private List<Integer> indices;
 
+    public Cylinder() {
+        this(0.5f, 1.0f, 36); // Default radius: 0.5, height: 1.0, segments: 36
+    }
+
     public Cylinder(float radius, float height, int segments) {
         this.radius = radius;
         this.height = height;

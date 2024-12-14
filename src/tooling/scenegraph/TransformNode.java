@@ -18,9 +18,9 @@ public class TransformNode extends SGNode {
   protected void update(Mat4 t) {
     worldTransform = t;
     t = Mat4.multiply(worldTransform, transform);
-    for (int i=0; i<children.size(); i++) {
-      children.get(i).update(t);
-    }   
+    for (SGNode child : children) {
+      child.update(t);
+    }
   }
 
   public void print(int indent, boolean inFull) {

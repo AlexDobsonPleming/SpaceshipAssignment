@@ -6,6 +6,7 @@ import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
 import models.meshes.Cube;
+import models.meshes.Cylinder;
 import models.meshes.Sphere;
 import tooling.*;
 import tooling.scenegraph.ModelNode;
@@ -60,24 +61,27 @@ public class RobotOne {
     robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(xPosition,0,0));
     
     TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(0,legLength,0));
-    
+
     // make pieces
+    NameNode base = makeBase(gl, bodyWidth,bodyHeight,bodyDepth, cube);
+    NameNode calf = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
+    NameNode thigh = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
     NameNode body = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
-    NameNode head = makeHead(gl, bodyHeight, headScale, sphere);
     NameNode leftArm = makeLeftArm(gl, bodyWidth, bodyHeight, armLength, armScale, cube2);
     NameNode rightArm = makeRightArm(gl, bodyWidth, bodyHeight, armLength, armScale, cube2);
-    NameNode leftLeg = makeLeftLeg(gl, bodyWidth, legLength, legScale, cube);
-    NameNode rightLeg = makeRightLeg(gl, bodyWidth, legLength, legScale, cube);
+    NameNode head = makeHead(gl, bodyHeight, headScale, sphere);
+
     
     //Once all the pieces are created, then the whole robot can be created.
     robotRoot.addChild(robotMoveTranslate);
       robotMoveTranslate.addChild(robotTranslate);
-        robotTranslate.addChild(body);
-          body.addChild(head);
+        robotTranslate.addChild(base);
+          base.addChild(calf);
+          calf.addChild(thigh);
+          thigh.addChild(body);
           body.addChild(leftArm);
           body.addChild(rightArm);
-          body.addChild(leftLeg);
-          body.addChild(rightLeg);
+          body.addChild(head);
     
     robotRoot.update();  // IMPORTANT - don't forget this
 
@@ -101,7 +105,28 @@ public class RobotOne {
     Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
     Model cube = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
     return cube;
-  } 
+  }
+
+  private Model makeCylinder(GL3 gl, Texture t1, Texture t2) {
+    String name= "cylinder";
+    Mesh mesh = new Mesh(gl, new Cylinder());
+    Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_2t.glsl");
+    Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
+    Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
+    Model cube = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
+    return cube;
+  }
+
+  private NameNode makeBase(GL3 gl, float bodyWidth, float bodyHeight, float bodyDepth, Model cube) {
+    NameNode body = new NameNode("base");
+    Mat4 m = Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth);
+    m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+    TransformNode bodyTransform = new TransformNode("body transform", m);
+    ModelNode bodyShape = new ModelNode("body model", cube);
+    body.addChild(bodyTransform);
+    bodyTransform.addChild(bodyShape);
+    return body;
+  }
 
   private NameNode makeBody(GL3 gl, float bodyWidth, float bodyHeight, float bodyDepth, Model cube) {
     NameNode body = new NameNode("body");
@@ -113,6 +138,7 @@ public class RobotOne {
     bodyTransform.addChild(bodyShape);
     return body;
   }
+
     
   private NameNode makeHead(GL3 gl, float bodyHeight, float headScale, Model sphere) {
     NameNode head = new NameNode("head"); 

@@ -26,8 +26,8 @@ public class SGNode {
   
   protected void update(Mat4 t) {
     worldTransform = t;
-    for (int i=0; i<children.size(); i++) {
-      children.get(i).update(t);
+    for (SGNode child : children) {
+      child.update(t);
     }
   }
 
