@@ -21,6 +21,6 @@ void main() {
   //vec3 norm = normalize(normal); // in case a normalised normal is not supplied
   //aNormal = mat3(normalMatrix) * norm;
 
-  // pass texture on even if no textures used. Shader will ignore it.
+  // pass texture on even if no textures used. tooling.Shader will ignore it.
   aTexCoord = texCoord;   
 }

@@ -1,6 +1,12 @@
 import gmaths.*;
 
 import com.jogamp.opengl.*;
+import models.Robot;
+import models.Room;
+import models.Skybox;
+import models.TextureLibrary;
+import tooling.Camera;
+import tooling.Light;
 
 public class M04_GLEventListener implements GLEventListener {
   
@@ -108,7 +114,7 @@ public class M04_GLEventListener implements GLEventListener {
   //private Mat4 perspective;
   private Room room;
   private Light light;
-  //private SGNode robotRoot;
+  //private tooling.scenegraph.SGNode robotRoot;
   
   private Robot robot;
 
@@ -136,7 +142,7 @@ public class M04_GLEventListener implements GLEventListener {
 
     room = new Room(gl, 16f,16f, camera, light, textures);
     
-    robot = new Robot(gl, camera, light, 
+    robot = new Robot(gl, camera, light,
                       textures.get("jade_diffuse"), textures.get("jade_specular"),
                       textures.get("container_diffuse"), textures.get("container_specular"),
                       textures.get("watt_diffuse"), textures.get("watt_specular"));

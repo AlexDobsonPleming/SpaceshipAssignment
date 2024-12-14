@@ -1,10 +1,19 @@
+package models;
+
 import gmaths.*;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
+import models.meshes.Cube;
+import models.meshes.Sphere;
+import tooling.scenegraph.ModelNode;
+import tooling.scenegraph.NameNode;
+import tooling.scenegraph.SGNode;
+import tooling.scenegraph.TransformNode;
+import tooling.*;
 
 /**
- * This class stores the Robot
+ * This class stores the models.Robot
  *
  * @author    Dr Steve Maddock
  * @version   1.0 (31/08/2022)
@@ -94,7 +103,7 @@ public class Robot {
     Mat4 m = Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth);
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode bodyTransform = new TransformNode("body transform", m);
-    ModelNode bodyShape = new ModelNode("Cube(body)", cube);
+    ModelNode bodyShape = new ModelNode("models.meshes.Cube(body)", cube);
     body.addChild(bodyTransform);
     bodyTransform.addChild(bodyShape);
     return body;
@@ -107,7 +116,7 @@ public class Robot {
     m = Mat4.multiply(m, Mat4Transform.scale(headScale,headScale,headScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode headTransform = new TransformNode("head transform", m);
-    ModelNode headShape = new ModelNode("Sphere(head)", sphere);
+    ModelNode headShape = new ModelNode("models.meshes.Sphere(head)", sphere);
     head.addChild(headTransform);
     headTransform.addChild(headShape);
     return head;
@@ -123,7 +132,7 @@ public class Robot {
     m = Mat4.multiply(m, Mat4Transform.scale(armScale,armLength,armScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode leftArmScale = new TransformNode("leftarm scale", m);
-    ModelNode leftArmShape = new ModelNode("Cube(left arm)", cube);
+    ModelNode leftArmShape = new ModelNode("models.meshes.Cube(left arm)", cube);
     leftArm.addChild(leftArmTranslate);
     leftArmTranslate.addChild(leftArmRotate);
     leftArmRotate.addChild(leftArmScale);
@@ -140,7 +149,7 @@ public class Robot {
     m = Mat4.multiply(m, Mat4Transform.scale(armScale,armLength,armScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode rightArmScale = new TransformNode("rightarm scale", m);
-    ModelNode rightArmShape = new ModelNode("Cube(right arm)", cube);
+    ModelNode rightArmShape = new ModelNode("models.meshes.Cube(right arm)", cube);
     rightArm.addChild(rightArmTranslate);
     rightArmTranslate.addChild(rightArmRotate);
     rightArmRotate.addChild(rightArmScale);
@@ -156,7 +165,7 @@ public class Robot {
     m = Mat4.multiply(m, Mat4Transform.scale(legScale,legLength,legScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode leftLegTransform = new TransformNode("leftleg transform", m);
-    ModelNode leftLegShape = new ModelNode("Cube(leftleg)", cube);
+    ModelNode leftLegShape = new ModelNode("models.meshes.Cube(leftleg)", cube);
     leftLeg.addChild(leftLegTransform);
     leftLegTransform.addChild(leftLegShape);
     return leftLeg;
@@ -170,7 +179,7 @@ public class Robot {
     m = Mat4.multiply(m, Mat4Transform.scale(legScale,legLength,legScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode rightLegTransform = new TransformNode("rightleg transform", m);
-    ModelNode rightLegShape = new ModelNode("Cube(rightleg)", cube);
+    ModelNode rightLegShape = new ModelNode("models.meshes.Cube(rightleg)", cube);
     rightLeg.addChild(rightLegTransform);
     rightLegTransform.addChild(rightLegShape);
     return rightLeg;

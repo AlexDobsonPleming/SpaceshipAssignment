@@ -1,7 +1,11 @@
+package models;
+
 import gmaths.*;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
+import tooling.Camera;
+import tooling.Light;
 
 /**
  * This class stores the Floor

@@ -1,8 +1,10 @@
+package tooling;
+
 import gmaths.*;
 import java.nio.*;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
-  
+
 public class Light {
   
   private Material material;

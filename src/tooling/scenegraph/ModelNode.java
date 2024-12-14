@@ -1,4 +1,7 @@
+package tooling.scenegraph;
+
 import com.jogamp.opengl.*;
+import tooling.Model;
 
 public class ModelNode extends SGNode {
 

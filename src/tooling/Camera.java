@@ -1,3 +1,5 @@
+package tooling;
+
 import gmaths.*;
 
 public class Camera {

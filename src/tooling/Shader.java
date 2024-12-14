@@ -1,3 +1,5 @@
+package tooling;
+
 import gmaths.*;
 import java.io.IOException;
 import java.nio.file.Files;

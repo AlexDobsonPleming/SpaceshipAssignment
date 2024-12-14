@@ -1,7 +1,10 @@
+package models;
+
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.*;
-import gmaths.*; // Assuming your Mat4 and Shader classes are in this package
+import gmaths.*; // Assuming your Mat4 and tooling.Shader classes are in this package
+import tooling.Shader;
 
 import java.io.File;
 

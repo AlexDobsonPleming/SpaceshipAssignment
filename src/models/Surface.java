@@ -1,8 +1,12 @@
+package models;
+
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec3;
+import models.meshes.TwoTriangles;
+import tooling.*;
 
 /**
  * This class stores the Floor
@@ -11,7 +15,7 @@ import gmaths.Vec3;
  * @version   1.0 (31/08/2022)
  */
 
-public class Window {
+public class Surface {
 
   private Camera camera;
   private Light light;
@@ -19,12 +23,12 @@ public class Window {
   private Model floor;
 
 
-  public Window(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
+  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
 
     camera = cameraIn;
     light = lightIn;
 
-    String name = "window";
+    String name = "floor";
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_1t.glsl");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);

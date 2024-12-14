@@ -1,3 +1,5 @@
+package models.meshes;
+
 public final class TwoTriangles {
   
   // ***************************************************

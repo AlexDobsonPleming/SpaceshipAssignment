@@ -1,3 +1,5 @@
+package models.meshes;
+
 public final class Cube {
   
   // ***************************************************
@@ -48,5 +50,4 @@ public final class Cube {
       23,22,18, // y +ve
       18,19,23  // y +ve
   };
-
 }

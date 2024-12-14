@@ -1,3 +1,5 @@
+package tooling.scenegraph;
+
 public class NameNode extends SGNode {
   
   public NameNode(String name) {

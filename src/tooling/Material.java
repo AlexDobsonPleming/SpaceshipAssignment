@@ -1,7 +1,9 @@
+package tooling;
+
 import gmaths.*;
 
  /**
- * This class stores the Material properties for a Mesh
+ * This class stores the tooling.Material properties for a tooling.Mesh
  *
  * @author    Dr Steve Maddock
  * @version   1.0 (15/10/2017)
