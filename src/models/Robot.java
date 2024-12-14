@@ -21,14 +21,18 @@ import tooling.*;
 
 public class Robot {
 
-  private Camera camera;
-  private Light light;
+  private final Camera camera;
+  private final Light light;
 
-  private Model sphere, cube, cube2;
+  private final Model sphere;
+    private final Model cube;
+    private final Model cube2;
 
-  private SGNode robotRoot;
+  private final SGNode robotRoot;
   private float xPosition = 0;
-  private TransformNode robotMoveTranslate, leftArmRotate, rightArmRotate;
+  private final TransformNode robotMoveTranslate;
+    private TransformNode leftArmRotate;
+    private TransformNode rightArmRotate;
    
   public Robot(GL3 gl, Camera cameraIn, Light lightIn, Texture t1, Texture t2, Texture t3, Texture t4, Texture t5, Texture t6) {
 
