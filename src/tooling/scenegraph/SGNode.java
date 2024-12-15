@@ -19,6 +19,10 @@ public class SGNode {
   public void addChild(SGNode child) {
     children.add(child);
   }
+
+  public void addChild(ISGNodeContainer child) {
+    children.add(child.getNode());
+  }
   
   public void update() {
     update(worldTransform);

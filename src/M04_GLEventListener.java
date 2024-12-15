@@ -130,6 +130,7 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "watt", "assets/textures/wattBook.jpg");
     textures.add(gl, "window", "assets/textures/window.png");
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
+    textures.add(gl, "arrow", "assets/textures/arrow.png");
     
     light = new Light(gl);
     light.setCamera(camera);

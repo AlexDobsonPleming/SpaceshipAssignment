@@ -8,10 +8,7 @@ import gmaths.Vec3;
 import models.meshes.Cube;
 import models.meshes.Sphere;
 import tooling.*;
-import tooling.scenegraph.ModelNode;
-import tooling.scenegraph.NameNode;
-import tooling.scenegraph.SGNode;
-import tooling.scenegraph.TransformNode;
+import tooling.scenegraph.*;
 
 /**
  * This class stores the models.Robot
@@ -26,15 +23,17 @@ public class RobotOneMk2 {
 
   private Camera camera;
   private Model sphere;
+  private Model cube;
   private Light light;
   private SGNode twoBranchRoot;
 
-  private TransformNode translateX, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft;
+  private TransformNode translateX, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
   private float xPosition = 0;
   private float rotateLowerLegAngleStart = 10, rotateLowerLegAngle = rotateLowerLegAngleStart;
   private float rotateUpperLegAngleStart = -60, rotateUpperLegAngle = rotateUpperLegAngleStart;
   private float rotateBodyAngleStart = 30, rotateBodyAngle = rotateBodyAngleStart;
   private float waveLeftAngleStart = 45, waveLeftAngle = waveLeftAngleStart;
+  private float waveRightAngleStart = 45, waveRightAngle = waveRightAngleStart;
 
   public RobotOneMk2(GL3 gl, Camera cameraIn, Light lightIn, TextureLibrary textures) {
 
@@ -43,25 +42,31 @@ public class RobotOneMk2 {
 
     twoBranchRoot = new NameNode("two-branch structure");
 
-    float lowerLegHeight = 4.0f;
-    float upperLegHeight = 3.1f;
-    float bodyWidth = 1f;
-    float bodyHeight = 3.1f;
 
-    sphere = makeSphere(gl, textures.get("jade_diffuse"), textures.get("jade_specular"));
 
-    SGNode lowerLeg = makeUpperBranch(sphere, 1.2f,lowerLegHeight,1f);
-    SGNode upperLeg = makeUpperBranch(sphere, 1f,upperLegHeight,1f);
-    SGNode body = makeUpperBranch(sphere, bodyWidth,bodyHeight, 1.4f);
-    SGNode leftArm = makeUpperBranch(sphere, 0.3f, 1f, 0.3f);
-    SGNode rightArm = makeUpperBranch(sphere, 0.3f, 1f, 0.3f);
+    sphere = makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
+    cube = makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
 
-    TransformNode translateToTopOfLowerLeg = new TransformNode("translate(0,"+lowerLegHeight+",0)",Mat4Transform.translate(0,lowerLegHeight,0));
-    TransformNode translateToTopOfUpperLeg = new TransformNode("translate(0,"+upperLegHeight+",0)",Mat4Transform.translate(0,upperLegHeight,0));
-    Mat4 leftArmTranslation = Mat4Transform.translate(-1 * bodyWidth + 0.5f, bodyHeight / 2, 0);
+    Branch base = new Branch(cube, 3f, 0.1f, 3f);
+    Branch lowerLeg = new Branch(sphere, 0.5f,2.0f,0.5f);
+    Branch upperLeg = new Branch(sphere, 0.5f,2f,0.5f);
+    Branch body = new Branch(sphere, 1f,3.1f, 1.4f);
+    Branch leftArm = new Branch(sphere, 0.3f, 1f, 0.3f);
+    Branch rightArm = new Branch(sphere, 0.3f, 1f, 0.3f);
+    Branch head = new Branch(cube, 1f, 1f, 1f);
+
+    TransformNode translateAboveBase = new TransformNode("translate above base", Mat4Transform.translate(0, base.scaleY, 0));
+    TransformNode translateToTopOfLowerLeg = new TransformNode("translate(0,"+ lowerLeg.scaleY +",0)",Mat4Transform.translate(0,lowerLeg.scaleY,0));
+    TransformNode translateToTopOfUpperLeg = new TransformNode("translate(0,"+ upperLeg.scaleY +",0)",Mat4Transform.translate(0,upperLeg.scaleY,0));
+
+    Mat4 leftArmTranslation = Mat4Transform.translate(-1 * body.scaleX + 0.5f, body.scaleY / 2, 0);
     TransformNode translateToLeftArmPosition = new TransformNode("translate to left arm pos", leftArmTranslation);
     TransformNode initialRotationLeftArmPosition = new TransformNode("initial rotation left arm", Mat4Transform.rotateAroundZ(90));
-    TransformNode translateToRightArmPosition = new TransformNode("translate to right arm pos", Mat4Transform.translate(bodyWidth, bodyHeight / 2, 0));
+
+    TransformNode translateToRightArmPosition = new TransformNode("translate to right arm pos", Mat4Transform.translate(body.scaleX - 0.5f, body.scaleY / 2, 0));
+    TransformNode initialRotationRightArmPosition = new TransformNode("initial rotation right arm", Mat4Transform.rotateAroundZ(-90));
+
+    TransformNode translateToHeadPosition = new TransformNode("transform to head pos", Mat4Transform.translate(0, body.scaleY, 0));
 
 
     // The next few are global variables so they can be updated in other methods
@@ -70,21 +75,31 @@ public class RobotOneMk2 {
     rotateUpperLeg = new TransformNode("rotateAroundZ("+ rotateUpperLegAngle +")",Mat4Transform.rotateAroundZ(rotateUpperLegAngle));
     rotateBody = new TransformNode("rotateAroundZ("+ rotateBodyAngle +")",Mat4Transform.rotateAroundZ(rotateBodyAngle));
     waveLeft = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(waveLeftAngle));
+    waveRight = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(0));
 
 
     twoBranchRoot.addChild(translateX);
-      translateX.addChild(rotateLowerLeg);
-        rotateLowerLeg.addChild(lowerLeg);
-        lowerLeg.addChild(translateToTopOfLowerLeg);
-          translateToTopOfLowerLeg.addChild(rotateUpperLeg);
-            rotateUpperLeg.addChild(upperLeg);
-              upperLeg.addChild(translateToTopOfUpperLeg);
-                translateToTopOfUpperLeg.addChild(rotateBody);
-                  rotateBody.addChild(body);
-                    body.addChild(translateToLeftArmPosition);
-                      translateToLeftArmPosition.addChild(initialRotationLeftArmPosition);
-                        initialRotationLeftArmPosition.addChild(waveLeft);
-                          waveLeft.addChild(leftArm);
+      translateX.addChild(base);
+        base.addChild(translateAboveBase);
+          translateAboveBase.addChild(rotateLowerLeg);
+            rotateLowerLeg.addChild(lowerLeg);
+              lowerLeg.addChild(translateToTopOfLowerLeg);
+                translateToTopOfLowerLeg.addChild(rotateUpperLeg);
+                  rotateUpperLeg.addChild(upperLeg.node);
+                    upperLeg.addChild(translateToTopOfUpperLeg);
+                      translateToTopOfUpperLeg.addChild(rotateBody);
+                        rotateBody.addChild(body);
+                          body.addChild(translateToLeftArmPosition);
+                            translateToLeftArmPosition.addChild(initialRotationLeftArmPosition);
+                              initialRotationLeftArmPosition.addChild(waveLeft);
+                                waveLeft.addChild(leftArm);
+                          body.addChild(translateToRightArmPosition);
+                            translateToRightArmPosition.addChild(initialRotationRightArmPosition);
+                              initialRotationRightArmPosition.addChild(waveRight);
+                                waveRight.addChild(rightArm);
+                          body.addChild(translateToHeadPosition);
+                            translateToHeadPosition.addChild(head);
+
 
 
       twoBranchRoot.update();  // IMPORTANT – must be done every time any part of the scene graph changes
@@ -111,18 +126,33 @@ public class RobotOneMk2 {
     return cube;
   }
 
+  class Branch implements ISGNodeContainer {
+    SGNode node;
 
-  private SGNode makeUpperBranch(Model sphere, float sx, float sy, float sz) {
-    NameNode upperBranchName = new NameNode("upper branch");
-    Mat4 m = Mat4Transform.scale(sx,sy,sz);
-    m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-    TransformNode upperBranch = new TransformNode("scale("+sx+","+sy+","+sz+");translate(0,0.5,0)", m);
-    ModelNode sphereNode = new ModelNode("Sphere(1)", sphere);
-    upperBranchName.addChild(upperBranch);
-    upperBranch.addChild(sphereNode);
-    return upperBranchName;
+    public float scaleX;
+    public float scaleY;
+    public float scaleZ;
+
+    public Branch(Model sphere, float sx, float sy, float sz) {
+      scaleX = sx;
+      scaleY = sy;
+      scaleZ = sz;
+
+      node = new NameNode("upper branch");
+      Mat4 m = Mat4Transform.scale(scaleX,scaleY,scaleZ);
+      m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
+      TransformNode upperBranch = new TransformNode("scale("+sx+","+sy+","+sz+");translate(0,0.5,0)", m);
+      ModelNode sphereNode = new ModelNode("Sphere(1)", sphere);
+      node.addChild(upperBranch);
+      upperBranch.addChild(sphereNode);
+    }
+
+    public SGNode getNode() { return node; }
+
+    public void addChild(SGNode child) {
+      node.addChild(child);
+    }
   }
-
 
   private NameNode makeBase(GL3 gl, Model cube, Texture t1, Texture t2) {
     NameNode body = new NameNode("base");
@@ -174,6 +204,9 @@ public class RobotOneMk2 {
 
     waveLeftAngle = waveLeftAngleStart * (float) Math.sin(elapsedTime * 0.7f);
     waveLeft.setTransform(Mat4Transform.rotateAroundZ(waveLeftAngle));
+
+    waveRightAngle = -1 * waveRightAngleStart * (float) Math.sin(elapsedTime * 0.7f);
+    waveRight.setTransform(Mat4Transform.rotateAroundZ(waveRightAngle));
 
     twoBranchRoot.update(); // IMPORTANT – the scene graph has changed
   }
