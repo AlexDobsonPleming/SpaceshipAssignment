@@ -25,6 +25,28 @@ public class M04 extends JFrame implements ActionListener {
 
   public M04(String textForTitleBar) {
     super(textForTitleBar);
+
+    // Set default close operation and size
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setSize(400, 300);
+
+    // Move the JFrame to the second monitor if available
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice[] devices = ge.getScreenDevices();
+
+    if (devices.length > 1) {
+      // Select the second monitor
+      GraphicsDevice secondMonitor = devices[1];
+
+      // Get the bounds of the second monitor
+      Rectangle bounds = secondMonitor.getDefaultConfiguration().getBounds();
+
+      // Move the JFrame to the second monitor
+      setLocation(bounds.x + 50, bounds.y + 50); // Offset by 50 for visibility
+    } else {
+      System.out.println("Only one monitor detected.");
+    }
+
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));
     canvas = new GLCanvas(glcapabilities);
     camera = new Camera(Camera.DEFAULT_POSITION, Camera.DEFAULT_TARGET, Camera.DEFAULT_UP);

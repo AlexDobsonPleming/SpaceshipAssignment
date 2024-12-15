@@ -33,13 +33,21 @@ public class RobotOne {
   private final SGNode robotRoot;
   private float xPosition = 0;
   private final TransformNode robotMoveTranslate;
-    private TransformNode leftArmRotate;
-    private TransformNode rightArmRotate;
+  private TransformNode lowerLegRotate;
+  private TransformNode upperLegRotate;
+  private TransformNode upperLegOrigin;
 
-  public RobotOne(GL3 gl, Camera cameraIn, Light lightIn, Texture t1, Texture t2, Texture t3, Texture t4, Texture t5, Texture t6) {
+  public RobotOne(GL3 gl, Camera cameraIn, Light lightIn, TextureLibrary textures) {
 
     this.camera = cameraIn;
     this.light = lightIn;
+
+    Texture t1 = textures.get("jade_diffuse");
+    Texture t2 = textures.get("jade_specular");
+    Texture t3 = textures.get("container_diffuse");
+    Texture t4 = textures.get("container_specular");
+    Texture t5 = textures.get("watt_diffuse");
+    Texture t6 = textures.get("watt_specular");
 
     sphere = makeSphere(gl, t1,t2);
 
@@ -47,15 +55,8 @@ public class RobotOne {
     cube2 = makeCube(gl, t5,t6);
 
     // robot
-    
-    float bodyHeight = 3f;
-    float bodyWidth = 2f;
-    float bodyDepth = 1f;
-    float headScale = 2f;
-    float armLength = 3.5f;
-    float armScale = 0.5f;
+
     float legLength = 3.5f;
-    float legScale = 0.67f;
     
     robotRoot = new NameNode("root");
     robotMoveTranslate = new TransformNode("robot transform",Mat4Transform.translate(xPosition,0,0));
@@ -63,25 +64,18 @@ public class RobotOne {
     TransformNode robotTranslate = new TransformNode("robot transform",Mat4Transform.translate(0,legLength,0));
 
     // make pieces
-    NameNode base = makeBase(gl, bodyWidth,bodyHeight,bodyDepth, cube);
-    NameNode calf = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
-    NameNode thigh = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
-    NameNode body = makeBody(gl, bodyWidth,bodyHeight,bodyDepth, cube);
-    NameNode leftArm = makeLeftArm(gl, bodyWidth, bodyHeight, armLength, armScale, cube2);
-    NameNode rightArm = makeRightArm(gl, bodyWidth, bodyHeight, armLength, armScale, cube2);
-    NameNode head = makeHead(gl, bodyHeight, headScale, sphere);
+    NameNode base = makeBase(gl, cube, t1, t2);
+    NameNode lowerLeg = makeLowerLeg(gl, t1, t2);
+    NameNode upperLeg = makeUpperLeg(gl, t1, t2);
+
 
     
     //Once all the pieces are created, then the whole robot can be created.
     robotRoot.addChild(robotMoveTranslate);
       robotMoveTranslate.addChild(robotTranslate);
         robotTranslate.addChild(base);
-          base.addChild(calf);
-          calf.addChild(thigh);
-          thigh.addChild(body);
-          body.addChild(leftArm);
-          body.addChild(rightArm);
-          body.addChild(head);
+          base.addChild(lowerLeg);
+            lowerLeg.addChild(upperLeg);
     
     robotRoot.update();  // IMPORTANT - don't forget this
 
@@ -117,25 +111,87 @@ public class RobotOne {
     return cube;
   }
 
-  private NameNode makeBase(GL3 gl, float bodyWidth, float bodyHeight, float bodyDepth, Model cube) {
+  private NameNode makeBase(GL3 gl, Model cube, Texture t1, Texture t2) {
     NameNode body = new NameNode("base");
-    Mat4 m = Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth);
-    m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-    TransformNode bodyTransform = new TransformNode("body transform", m);
-    ModelNode bodyShape = new ModelNode("body model", cube);
-    body.addChild(bodyTransform);
-    bodyTransform.addChild(bodyShape);
+    float baseWidth = 3;
+    float baseHeight = 0.1f;
+    float baseDepth = 3;
+    Mat4 size = Mat4Transform.scale(baseWidth,baseHeight,baseDepth);
+    Mat4 translate = Mat4Transform.translate(0,-3.5f,0);
+    Mat4 transform = Mat4.multiply(translate, size);
+    TransformNode baseTransform = new TransformNode("base transform", transform);
+    ModelNode bodyShape = new ModelNode("base model", makeCube(gl, t1, t2));
+    body.addChild(baseTransform);
+    baseTransform.addChild(bodyShape);
     return body;
   }
 
-  private NameNode makeBody(GL3 gl, float bodyWidth, float bodyHeight, float bodyDepth, Model cube) {
+  private NameNode makeLowerLeg(GL3 gl, Texture t1, Texture t2) {
+    NameNode lowerLeg = new NameNode("lower leg");
+    float bodyWidth = 0.5f;
+    float bodyHeight = 2.5f;
+    float bodyDepth = 0.5f;
+
+    TransformNode lowerLegTranslate = new TransformNode("lower body translate",
+            Mat4Transform.translate(0,-1.5f * bodyHeight,0));
+    TransformNode lowerLegFixRotation = new TransformNode("lower leg fix rotation", Mat4Transform.rotateAroundX(180));
+    lowerLegRotate = new TransformNode("lower leg rotate",Mat4Transform.rotateAroundX(0));
+
+    TransformNode lowerLegScale = new TransformNode("lower leg scale", Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth));
+
+    ModelNode lowerLegShape = new ModelNode("lower leg model", makeSphere(gl, t1, t2));
+
+    TransformNode lowerLegReorient = new TransformNode("temp", Mat4Transform.translate(0,-0.5f * bodyHeight,0));
+
+    lowerLeg.addChild(lowerLegTranslate);
+    lowerLegTranslate.addChild(lowerLegFixRotation);
+    lowerLegFixRotation.addChild(lowerLegRotate);
+    lowerLegRotate.addChild(lowerLegReorient);
+    lowerLegReorient.addChild(lowerLegScale);
+    lowerLegScale.addChild(lowerLegShape);
+    return lowerLeg;
+  }
+
+  private NameNode makeUpperLeg(GL3 gl, Texture t1, Texture t2) {
+    NameNode upperLeg = new NameNode("upper leg");
+    upperLegOrigin = new TransformNode("ul origin", Mat4Transform.rotateAroundX(0));
+    float bodyWidth = 0.5f;
+    float bodyHeight = 2.5f;
+    float bodyDepth = 0.5f;
+    TransformNode upperLegTranslate = new TransformNode("upper body translate",
+            Mat4Transform.translate(0,-0.5f * bodyHeight,0));
+    TransformNode upperLegFixRotation = new TransformNode("upper leg fix rotation", Mat4Transform.rotateAroundX(180));
+    upperLegRotate = new TransformNode("upper leg rotate",Mat4Transform.rotateAroundX(0));
+
+    TransformNode upperLegScale = new TransformNode("upper leg scale", Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth));
+
+    ModelNode upperLegShape = new ModelNode("upper leg model", makeSphere(gl, t1, t2));
+
+    TransformNode upperLegRetranslate = new TransformNode("temp", Mat4Transform.translate(0,-0.5f * bodyHeight,0));
+
+//    upperLeg.addChild(lowerLegRotate);
+//    upperLeg.addChild(upperLegOrigin);
+    upperLeg.addChild(upperLegTranslate);
+    upperLegTranslate.addChild(upperLegFixRotation);
+    upperLegFixRotation.addChild(upperLegRotate);
+    upperLegRotate.addChild(upperLegRetranslate);
+    upperLegRetranslate.addChild(upperLegScale);
+    upperLegScale.addChild(upperLegShape);
+    return upperLeg;
+  }
+
+  private NameNode makeBody(GL3 gl, Model cube, Texture t1, Texture t2) {
     NameNode body = new NameNode("body");
-    Mat4 m = Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth);
-    m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-    TransformNode bodyTransform = new TransformNode("body transform", m);
-    ModelNode bodyShape = new ModelNode("models.meshes.Cube(body)", cube);
-    body.addChild(bodyTransform);
-    bodyTransform.addChild(bodyShape);
+    float bodyWidth = 1;
+    float bodyHeight = 5f;
+    float bodyDepth = 1;
+    Mat4 size = Mat4Transform.scale(bodyWidth,bodyHeight,bodyDepth);
+    Mat4 translate = Mat4Transform.translate(0,-3.5f,0);
+    Mat4 transform = Mat4.multiply(translate, size);
+    TransformNode baseTransform = new TransformNode("body transform", transform);
+    ModelNode bodyShape = new ModelNode("body model", makeSphere(gl, t1, t2));
+    body.addChild(baseTransform);
+    baseTransform.addChild(bodyShape);
     return body;
   }
 
@@ -158,35 +214,19 @@ public class RobotOne {
     TransformNode leftArmTranslate = new TransformNode("leftarm translate", 
                                           Mat4Transform.translate((bodyWidth*0.5f)+(armScale*0.5f),bodyHeight,0));
     // leftArmRotate is a class attribute with a transform that changes over time
-    leftArmRotate = new TransformNode("leftarm rotate",Mat4Transform.rotateAroundX(180));
+    lowerLegRotate = new TransformNode("leftarm rotate",Mat4Transform.rotateAroundX(180));
     Mat4 m = new Mat4(1);
     m = Mat4.multiply(m, Mat4Transform.scale(armScale,armLength,armScale));
     m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
     TransformNode leftArmScale = new TransformNode("leftarm scale", m);
     ModelNode leftArmShape = new ModelNode("models.meshes.Cube(left arm)", cube);
     leftArm.addChild(leftArmTranslate);
-    leftArmTranslate.addChild(leftArmRotate);
-    leftArmRotate.addChild(leftArmScale);
+    leftArmTranslate.addChild(lowerLegRotate);
+    lowerLegRotate.addChild(leftArmScale);
     leftArmScale.addChild(leftArmShape);
     return leftArm;
   }
 
-  private NameNode makeRightArm(GL3 gl, float bodyWidth, float bodyHeight, float armLength, float armScale, Model cube) {
-    NameNode rightArm = new NameNode("right arm");
-    TransformNode rightArmTranslate = new TransformNode("rightarm translate", 
-                                          Mat4Transform.translate(-(bodyWidth*0.5f)-(armScale*0.5f),bodyHeight,0));
-    rightArmRotate = new TransformNode("rightarm rotate",Mat4Transform.rotateAroundX(180));
-    Mat4 m = new Mat4(1);
-    m = Mat4.multiply(m, Mat4Transform.scale(armScale,armLength,armScale));
-    m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-    TransformNode rightArmScale = new TransformNode("rightarm scale", m);
-    ModelNode rightArmShape = new ModelNode("models.meshes.Cube(right arm)", cube);
-    rightArm.addChild(rightArmTranslate);
-    rightArmTranslate.addChild(rightArmRotate);
-    rightArmRotate.addChild(rightArmScale);
-    rightArmScale.addChild(rightArmShape);
-    return rightArm;
-  }
 
   private NameNode makeLeftLeg(GL3 gl, float bodyWidth, float legLength, float legScale, Model cube) {
     NameNode leftLeg = new NameNode("left leg");
@@ -237,26 +277,18 @@ public class RobotOne {
     robotMoveTranslate.update();
   }
 
+
   // only does left arm
   public void updateAnimation(double elapsedTime) {
-    float rotateAngle = 180f+90f*(float)Math.sin(elapsedTime);
-    leftArmRotate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
-    leftArmRotate.update();
+    float rotateAngle = 45f*(float)Math.sin(elapsedTime);
+    lowerLegRotate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
+    lowerLegRotate.update();
+    upperLegOrigin.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
+    upperLegOrigin.update();
+    upperLegRotate.setTransform(Mat4Transform.rotateAroundX(rotateAngle));
+    upperLegRotate.update();
   }
 
-  public void loweredArms() {
-    leftArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-    leftArmRotate.update();
-    rightArmRotate.setTransform(Mat4Transform.rotateAroundX(180));
-    rightArmRotate.update();
-  }
-
-  public void raisedArms() {
-    leftArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-    leftArmRotate.update();
-    rightArmRotate.setTransform(Mat4Transform.rotateAroundX(0));
-    rightArmRotate.update();
-  }
 
   public void dispose(GL3 gl) {
     sphere.dispose(gl);

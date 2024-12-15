@@ -1,5 +1,7 @@
 package models.meshes;
 
+import models.meshes.IMesh;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,21 +10,21 @@ public class Cylinder implements IMesh {
     private float height;
     private int segments;
 
-    private List<Float> vertices;
-    private List<Float> normals;
+    private List<Float> vertices; // Interleaved vertex data
     private List<Integer> indices;
 
+    // Default constructor with sensible defaults
     public Cylinder() {
         this(0.5f, 1.0f, 36); // Default radius: 0.5, height: 1.0, segments: 36
     }
 
+    // Constructor with specified parameters
     public Cylinder(float radius, float height, int segments) {
         this.radius = radius;
         this.height = height;
         this.segments = segments;
 
         vertices = new ArrayList<>();
-        normals = new ArrayList<>();
         indices = new ArrayList<>();
         generateMesh();
     }
@@ -30,29 +32,32 @@ public class Cylinder implements IMesh {
     private void generateMesh() {
         float angleStep = (float) (2.0 * Math.PI / segments);
 
-        // Generate vertices and normals for the top and bottom circles
+        // Generate vertices, normals, and texture coordinates
         for (int i = 0; i <= segments; i++) {
             float angle = i * angleStep;
             float x = (float) Math.cos(angle);
             float z = (float) Math.sin(angle);
+            float u = (float) i / segments;
 
-            // Top circle
-            vertices.add(radius * x);  // x
-            vertices.add(height / 2);  // y (top)
-            vertices.add(radius * z); // z
+            // Top circle vertex
+            vertices.add(radius * x);          // x
+            vertices.add(height / 2);          // y
+            vertices.add(radius * z);          // z
+            vertices.add(x);                   // nx
+            vertices.add(0.0f);                // ny
+            vertices.add(z);                   // nz
+            vertices.add(u);                   // u (texture)
+            vertices.add(1.0f);                // v (texture)
 
-            normals.add(x);           // nx
-            normals.add(0.0f);        // ny
-            normals.add(z);           // nz
-
-            // Bottom circle
-            vertices.add(radius * x);  // x
-            vertices.add(-height / 2); // y (bottom)
-            vertices.add(radius * z); // z
-
-            normals.add(x);            // nx
-            normals.add(0.0f);         // ny
-            normals.add(z);            // nz
+            // Bottom circle vertex
+            vertices.add(radius * x);          // x
+            vertices.add(-height / 2);         // y
+            vertices.add(radius * z);          // z
+            vertices.add(x);                   // nx
+            vertices.add(0.0f);                // ny
+            vertices.add(z);                   // nz
+            vertices.add(u);                   // u (texture)
+            vertices.add(0.0f);                // v (texture)
         }
 
         // Generate indices for the sides of the cylinder
@@ -69,15 +74,16 @@ public class Cylinder implements IMesh {
             indices.add(topStart + 2);
         }
 
-        // Generate indices for the top circle
-        int centerTop = vertices.size() / 3; // Add a center vertex for the top
+        // Top circle
+        int centerTop = vertices.size() / 8; // Add a center vertex
         vertices.add(0.0f);  // x
         vertices.add(height / 2);  // y
         vertices.add(0.0f);  // z
-
-        normals.add(0.0f);  // nx
-        normals.add(1.0f);  // ny
-        normals.add(0.0f);  // nz
+        vertices.add(0.0f);  // nx
+        vertices.add(1.0f);  // ny
+        vertices.add(0.0f);  // nz
+        vertices.add(0.5f);  // u
+        vertices.add(0.5f);  // v
 
         for (int i = 0; i < segments; i++) {
             indices.add(centerTop);
@@ -85,15 +91,16 @@ public class Cylinder implements IMesh {
             indices.add((i * 2 + 2) % (segments * 2));
         }
 
-        // Generate indices for the bottom circle
-        int centerBottom = vertices.size() / 3; // Add a center vertex for the bottom
+        // Bottom circle
+        int centerBottom = vertices.size() / 8; // Add a center vertex
         vertices.add(0.0f);  // x
         vertices.add(-height / 2);  // y
         vertices.add(0.0f);  // z
-
-        normals.add(0.0f);  // nx
-        normals.add(-1.0f); // ny
-        normals.add(0.0f);  // nz
+        vertices.add(0.0f);  // nx
+        vertices.add(-1.0f); // ny
+        vertices.add(0.0f);  // nz
+        vertices.add(0.5f);  // u
+        vertices.add(0.5f);  // v
 
         for (int i = 0; i < segments; i++) {
             indices.add(centerBottom);
@@ -108,14 +115,6 @@ public class Cylinder implements IMesh {
             vertexArray[i] = vertices.get(i);
         }
         return vertexArray;
-    }
-
-    public float[] getNormals() {
-        float[] normalArray = new float[normals.size()];
-        for (int i = 0; i < normals.size(); i++) {
-            normalArray[i] = normals.get(i);
-        }
-        return normalArray;
     }
 
     public int[] getIndices() {

@@ -49,7 +49,7 @@ public class Room {
     Mat4 windowWallTransform = Mat4.multiply(Mat4.multiply(windowWallRotate, windowWallRaise), windowWallPushBack);
     windowWall = new Window(gl, xSize, floorToCeilingHeight, cameraIn, lightIn, window, windowWallTransform);
 
-    Texture watt = textures.get("watt");
+    Texture watt = textures.get("bridge");
     Mat4 wattWallRotate = Mat4.multiply(Mat4Transform.rotateAroundZ(270), Mat4Transform.rotateAroundY(90));
     Mat4 wattWallRaise = Mat4Transform.translate(new Vec3(0, 0, -1 * floorToCeilingHeight / 2));
     Mat4 wattWallPushBack = Mat4Transform.translate(new Vec3(0, -1 * xSize, 0));

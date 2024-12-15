@@ -89,12 +89,12 @@ public class M04_GLEventListener implements GLEventListener {
   
   public void loweredArms() {
     stopAnimation();
-    robot.loweredArms();
+//    robot.loweredArms();
   }
    
   public void raisedArms() {
     stopAnimation();
-    robot.raisedArms();
+//    robot.raisedArms();
   }
   
   // ***************************************************
@@ -113,7 +113,7 @@ public class M04_GLEventListener implements GLEventListener {
   private Light light;
   //private tooling.scenegraph.SGNode robotRoot;
   
-  private RobotOne robot;
+  private RobotOneMk2 robot;
 
 
   private void initialise(GL3 gl) {
@@ -129,6 +129,7 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "watt_specular", "assets/textures/wattBook_specular.jpg");
     textures.add(gl, "watt", "assets/textures/wattBook.jpg");
     textures.add(gl, "window", "assets/textures/window.png");
+    textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     
     light = new Light(gl);
     light.setCamera(camera);
@@ -139,10 +140,8 @@ public class M04_GLEventListener implements GLEventListener {
 
     room = new Room(gl, 16f,16f, camera, light, textures);
     
-    robot = new RobotOne(gl, camera, light,
-                      textures.get("jade_diffuse"), textures.get("jade_specular"),
-                      textures.get("container_diffuse"), textures.get("container_specular"),
-                      textures.get("watt_diffuse"), textures.get("watt_specular"));
+    robot = new RobotOneMk2(gl, camera, light,
+                      textures);
   }
  
   // animation control of start stop is poor and needs improving
