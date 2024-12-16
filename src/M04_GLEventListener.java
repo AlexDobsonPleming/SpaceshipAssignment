@@ -108,12 +108,10 @@ public class M04_GLEventListener implements GLEventListener {
 
   private Camera camera;
   private Skybox skybox;
-  //private Mat4 perspective;
   private Room room;
   private Light light;
-  //private tooling.scenegraph.SGNode robotRoot;
-  
   private RobotOneMk2 robot;
+  private Globe globe;
 
 
   private void initialise(GL3 gl) {
@@ -143,6 +141,9 @@ public class M04_GLEventListener implements GLEventListener {
     
     robot = new RobotOneMk2(gl, camera, light,
                       textures);
+
+    globe = new Globe(gl, camera, light,
+            textures);
   }
  
   // animation control of start stop is poor and needs improving
@@ -153,11 +154,12 @@ public class M04_GLEventListener implements GLEventListener {
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
     room.render(gl);
+    double elapsedTime = getSeconds()-startTime;
     if (animation) {
-      double elapsedTime = getSeconds()-startTime;
       robot.updateAnimation(elapsedTime);
     }
     robot.render(gl);
+    globe.render(gl, elapsedTime);
   }
 
   

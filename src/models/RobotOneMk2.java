@@ -126,48 +126,6 @@ public class RobotOneMk2 {
     return cube;
   }
 
-  class Branch implements ISGNodeContainer {
-    SGNode node;
-
-    public float scaleX;
-    public float scaleY;
-    public float scaleZ;
-
-    public Branch(Model sphere, float sx, float sy, float sz) {
-      scaleX = sx;
-      scaleY = sy;
-      scaleZ = sz;
-
-      node = new NameNode("upper branch");
-      Mat4 m = Mat4Transform.scale(scaleX,scaleY,scaleZ);
-      m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0));
-      TransformNode upperBranch = new TransformNode("scale("+sx+","+sy+","+sz+");translate(0,0.5,0)", m);
-      ModelNode sphereNode = new ModelNode("Sphere(1)", sphere);
-      node.addChild(upperBranch);
-      upperBranch.addChild(sphereNode);
-    }
-
-    public SGNode getNode() { return node; }
-
-    public void addChild(SGNode child) {
-      node.addChild(child);
-    }
-  }
-
-  private NameNode makeBase(GL3 gl, Model cube, Texture t1, Texture t2) {
-    NameNode body = new NameNode("base");
-    float baseWidth = 3;
-    float baseHeight = 0.1f;
-    float baseDepth = 3;
-    Mat4 size = Mat4Transform.scale(baseWidth,baseHeight,baseDepth);
-    Mat4 translate = Mat4Transform.translate(0,-3.5f,0);
-    Mat4 transform = Mat4.multiply(translate, size);
-    TransformNode baseTransform = new TransformNode("base transform", transform);
-    ModelNode bodyShape = new ModelNode("base model", makeCube(gl, t1, t2));
-    body.addChild(baseTransform);
-    baseTransform.addChild(bodyShape);
-    return body;
-  }
 
   public void render(GL3 gl) {
     twoBranchRoot.draw(gl);
