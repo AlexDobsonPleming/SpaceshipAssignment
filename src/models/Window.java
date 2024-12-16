@@ -20,7 +20,7 @@ public class Window {
   private Camera camera;
   private Light light;
 
-  private Model floor;
+  private Model windowModel;
 
 
   public Window(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
@@ -34,12 +34,14 @@ public class Window {
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 scale = Mat4Transform.scale(xSize,1f,zSize);
     Mat4 modelMatrix = Mat4.multiply(translateIn, scale);
-    floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, texture1);
+    windowModel = new Model(name, mesh, modelMatrix, shader, material, light, camera, texture1);
 
   }
 
   public void render(GL3 gl) {
-    floor.render(gl);
+    windowModel.render(gl);
   }
+
+  public void dispose(GL3 gl) { windowModel.dispose(gl); }
 
 }

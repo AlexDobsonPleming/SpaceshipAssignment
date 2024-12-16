@@ -1,12 +1,8 @@
 package models;
 
 import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.util.texture.Texture;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
-import gmaths.Vec3;
-import models.meshes.Cube;
-import models.meshes.Sphere;
 import tooling.*;
 import tooling.scenegraph.*;
 
@@ -17,14 +13,13 @@ import tooling.scenegraph.*;
  * @version   1.0 (31/08/2022)
  */
 
-public class RobotOneMk2 {
+public class RobotOne {
 
   private TextureLibrary textures;
 
-  private Camera camera;
+  private Shapes shapes;
   private Model sphere;
   private Model cube;
-  private Light light;
   private SGNode twoBranchRoot;
 
   private TransformNode translateX, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
@@ -35,17 +30,16 @@ public class RobotOneMk2 {
   private float waveLeftAngleStart = 45, waveLeftAngle = waveLeftAngleStart;
   private float waveRightAngleStart = 45, waveRightAngle = waveRightAngleStart;
 
-  public RobotOneMk2(GL3 gl, Camera cameraIn, Light lightIn, TextureLibrary textures) {
+  public RobotOne(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
 
-    this.camera = cameraIn;
-    this.light = lightIn;
+    shapes = shapeFactory;
 
     twoBranchRoot = new NameNode("two-branch structure");
 
 
 
-    sphere = makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
-    cube = makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
+    sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
+    cube = shapes.makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
 
     Branch base = new Branch(cube, 3f, 0.1f, 3f);
     Branch lowerLeg = new Branch(sphere, 0.5f,2.0f,0.5f);
@@ -106,25 +100,7 @@ public class RobotOneMk2 {
 
   }
 
-  private Model makeSphere(GL3 gl, Texture t1, Texture t2) {
-    String name= "sphere";
-    Mesh mesh = new Mesh(gl, new Sphere());
-    Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_2t.glsl");
-    Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-    Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
-    Model sphere = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
-    return sphere;
-  } 
 
-  private Model makeCube(GL3 gl, Texture t1, Texture t2) {
-    String name= "cube";
-    Mesh mesh = new Mesh(gl, new Cube());
-    Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_2t.glsl");
-    Material material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-    Mat4 modelMatrix = Mat4.multiply(Mat4Transform.scale(4,4,4), Mat4Transform.translate(0,0.5f,0));
-    Model cube = new Model(name, mesh, modelMatrix, shader, material, light, camera, t1, t2);
-    return cube;
-  }
 
 
   public void render(GL3 gl) {

@@ -5,6 +5,8 @@ import models.*;
 import tooling.Camera;
 import tooling.Light;
 
+import java.awt.*;
+
 public class M04_GLEventListener implements GLEventListener {
   
   private static final boolean DISPLAY_SHADERS = false;
@@ -54,8 +56,10 @@ public class M04_GLEventListener implements GLEventListener {
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
     light.dispose(gl);
-    //floor.dispose(gl);
-    robot.dispose(gl);
+    room.dispose(gl);
+    robotOne.dispose(gl);
+    robotTwo.dispose(gl);
+    globe.dispose(gl);
   }
   
   
@@ -80,11 +84,11 @@ public class M04_GLEventListener implements GLEventListener {
   }
    
   public void incXPosition() {
-    robot.incXPosition();
+    robotOne.incXPosition();
   }
    
   public void decXPosition() {
-    robot.decXPosition();
+    robotOne.decXPosition();
   }
   
   public void loweredArms() {
@@ -105,12 +109,14 @@ public class M04_GLEventListener implements GLEventListener {
 
   // textures
   private TextureLibrary textures;
+  private Shapes shapes;
 
   private Camera camera;
   private Skybox skybox;
   private Room room;
   private Light light;
-  private RobotOneMk2 robot;
+  private RobotOne robotOne;
+  private RobotTwo robotTwo;
   private Globe globe;
 
 
@@ -129,9 +135,12 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "window", "assets/textures/window.png");
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
+    textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
     
     light = new Light(gl);
     light.setCamera(camera);
+
+    shapes = new Shapes(camera, light);
 
     skybox = new Skybox(gl);
     // floor
@@ -139,11 +148,11 @@ public class M04_GLEventListener implements GLEventListener {
 
     room = new Room(gl, 16f,16f, camera, light, textures);
     
-    robot = new RobotOneMk2(gl, camera, light,
-                      textures);
+    robotOne = new RobotOne(gl, shapes, textures);
 
-    globe = new Globe(gl, camera, light,
-            textures);
+    robotTwo = new RobotTwo(gl, shapes, textures);
+
+    globe = new Globe(gl, shapes, textures);
   }
  
   // animation control of start stop is poor and needs improving
@@ -156,9 +165,10 @@ public class M04_GLEventListener implements GLEventListener {
     room.render(gl);
     double elapsedTime = getSeconds()-startTime;
     if (animation) {
-      robot.updateAnimation(elapsedTime);
+      robotOne.updateAnimation(elapsedTime);
     }
-    robot.render(gl);
+    robotOne.render(gl);
+    robotTwo.render(gl, elapsedTime);
     globe.render(gl, elapsedTime);
   }
 

@@ -27,8 +27,9 @@ public class Room {
    
   public Room(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, TextureLibrary textures) {
     Texture chequerboard = textures.get("chequerboard");
+    Texture asphalt = textures.get("asphalt");
 
-    floor = new Surface(gl, xSize, zSize, cameraIn, lightIn, chequerboard, Mat4Transform.translate(new Vec3()));
+    floor = new Surface(gl, xSize, zSize, cameraIn, lightIn, asphalt, Mat4Transform.translate(new Vec3()));
 
     Mat4 ceilingTranslate = Mat4Transform.translate(new Vec3(0, floorToCeilingHeight, 0));
     Mat4 ceilingRotate = Mat4Transform.rotateAroundX(180);
@@ -71,6 +72,15 @@ public class Room {
     windowWall.render(gl);
     oppositeWall.render(gl);
     wallBehindWindowTest.render(gl);
+  }
+
+  public void dispose(GL3 gl) {
+    floor.dispose(gl);
+    ceiling.dispose(gl);
+    rearWall.dispose(gl);
+    windowWall.dispose(gl);
+    oppositeWall.dispose(gl);
+    wallBehindWindowTest.dispose(gl);
   }
 
 }

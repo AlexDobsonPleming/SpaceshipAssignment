@@ -20,11 +20,10 @@ public class Surface {
   private Camera camera;
   private Light light;
 
-  private Model floor;
+  private Model surface;
 
 
   public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, Light lightIn, Texture texture1, Mat4 translateIn) {
-
     camera = cameraIn;
     light = lightIn;
 
@@ -34,12 +33,14 @@ public class Surface {
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 scale = Mat4Transform.scale(xSize,1f,zSize);
     Mat4 modelMatrix = Mat4.multiply(translateIn, scale);
-    floor = new Model(name, mesh, modelMatrix, shader, material, light, camera, texture1);
+    surface = new Model(name, mesh, modelMatrix, shader, material, light, camera, texture1);
 
   }
 
   public void render(GL3 gl) {
-    floor.render(gl);
+    surface.render(gl);
   }
+
+  public void dispose(GL3 gl) { surface.dispose(gl); }
 
 }
