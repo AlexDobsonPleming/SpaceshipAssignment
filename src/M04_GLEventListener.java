@@ -55,7 +55,9 @@ public class M04_GLEventListener implements GLEventListener {
   /* Clean up memory, if necessary */
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
-    light.dispose(gl);
+    for (Light light : lights) {
+      light.dispose(gl);
+    }
     room.dispose(gl);
     robotOne.dispose(gl);
     robotTwo.dispose(gl);
@@ -114,7 +116,7 @@ public class M04_GLEventListener implements GLEventListener {
   private Camera camera;
   private Skybox skybox;
   private Room room;
-  private Light light;
+  private Light[] lights;
   private RobotOne robotOne;
   private RobotTwo robotTwo;
   private Globe globe;
@@ -136,17 +138,18 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
-    
-    light = new Light(gl);
-    light.setCamera(camera);
 
-    shapes = new Shapes(camera, light);
+    lights = new Light[1];
+    lights[0] = new Light(gl);
+    lights[0].setCamera(camera);
+
+    shapes = new Shapes(camera, lights);
 
     skybox = new Skybox(gl);
     // floor
 
 
-    room = new Room(gl, 16f,16f, camera, light, textures);
+    room = new Room(gl, 16f,16f, camera, lights, textures);
     
     robotOne = new RobotOne(gl, shapes, textures);
 
@@ -160,8 +163,8 @@ public class M04_GLEventListener implements GLEventListener {
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
     skybox.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix());
-    light.setPosition(getLightPosition());  // changing light position each frame
-    light.render(gl);
+    lights[0].setPosition(getLightPosition());  // changing light position each frame
+    lights[0].render(gl);
     room.render(gl);
     double elapsedTime = getSeconds()-startTime;
     if (animation) {
