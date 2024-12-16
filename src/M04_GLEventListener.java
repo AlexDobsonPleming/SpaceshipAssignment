@@ -4,8 +4,8 @@ import com.jogamp.opengl.*;
 import models.*;
 import tooling.Camera;
 import tooling.Light;
-
-import java.awt.*;
+import tooling.PointLight;
+import tooling.SpotLight;
 
 public class M04_GLEventListener implements GLEventListener {
   
@@ -139,9 +139,7 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
 
-    lights = new Light[1];
-    lights[0] = new Light(gl);
-    lights[0].setCamera(camera);
+    lights = new Light[2];
 
     shapes = new Shapes(camera, lights);
 
@@ -155,6 +153,17 @@ public class M04_GLEventListener implements GLEventListener {
 
     robotTwo = new RobotTwo(gl, shapes, textures);
 
+    lights[0] = new PointLight(gl, this::getPointLightPosition);
+    lights[0].setCamera(camera);
+//    lights[0].disable();
+
+    lights[1] = new SpotLight(
+            gl,
+            robotTwo::getSpotlightPosition,
+            robotTwo::getSpotlightDirection
+            );
+    lights[1].setCamera(camera);
+
     globe = new Globe(gl, shapes, textures);
   }
  
@@ -163,7 +172,6 @@ public class M04_GLEventListener implements GLEventListener {
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
     skybox.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix());
-    lights[0].setPosition(getLightPosition());  // changing light position each frame
     lights[0].render(gl);
     room.render(gl);
     double elapsedTime = getSeconds()-startTime;
@@ -177,7 +185,7 @@ public class M04_GLEventListener implements GLEventListener {
 
   
   // The light's position is continually being changed, so needs to be calculated for each frame.
-  private Vec3 getLightPosition() {
+  private Vec3 getPointLightPosition() {
     double elapsedTime = getSeconds()-startTime;
     float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime*50)));
     float y = 2.7f;

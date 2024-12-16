@@ -3,6 +3,7 @@ package models;
 import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
+import gmaths.Vec3;
 import tooling.Model;
 import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
@@ -24,6 +25,8 @@ public class RobotTwo {
   private Model cube;
   private SGNode root;
 
+  private Branch spotlight;
+
   private TransformNode translateRoot, rotateSpotlight;
 
   public RobotTwo(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
@@ -39,7 +42,7 @@ public class RobotTwo {
     Branch leftEye = new Branch(sphere, 0.3f, 0.3f, 0.3f);
     Branch rightEye = new Branch(sphere, 0.3f, 0.3f, 0.3f);
     Branch antennae = new Branch(cube, 0.1f, 1f, 0.1f);
-    Branch spotlight = new Branch(cube, 0.3f, 0.3f, 0.3f);
+    spotlight = new Branch(cube, 0.3f, 0.3f, 0.3f);
 
     TransformNode translateAboveBody = new TransformNode("translate above base", Mat4Transform.translate(0, body.scaleY, 0));
 
@@ -81,6 +84,14 @@ public class RobotTwo {
     rotateSpotlight.setTransform(Mat4Transform.rotateAroundY((angularVelocity * (float)elapsedTime) % 360));
 
     root.update(); // IMPORTANT – the scene graph has changed
+  }
+
+  public Vec3 getSpotlightPosition() {
+    return spotlight.getNode().getPosition();
+  }
+
+  public Vec3 getSpotlightDirection() {
+    return spotlight.getNode().getDirection();
   }
 
 

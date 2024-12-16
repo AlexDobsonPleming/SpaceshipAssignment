@@ -2,6 +2,10 @@ package tooling;
 
 import gmaths.*;
 import java.nio.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
@@ -114,11 +118,38 @@ public class Model {
 
     shader.setInt(gl,"numLights", lights.length);
 
-    for (int i=0; i<lights.length; i++) {
+    List<Light> enabledLights = Arrays.stream(lights)
+            .filter(Light::isEnabled)
+            .collect(Collectors.toList());
+
+    PointLight[] pointLights = enabledLights.stream()
+            .filter(PointLight.class::isInstance)
+            .map(PointLight.class::cast)         // cast to pointlight
+            .toArray(PointLight[]::new);
+
+    for (int i=0; i<pointLights.length; i++) {
       shader.setVec3(gl, "lights["+i+"].position", lights[i].getPosition());
-      shader.setVec3(gl, "lights["+i+"].ambient", lights[i].getMaterial().getAmbient());
-      shader.setVec3(gl, "lights["+i+"].diffuse", lights[i].getMaterial().getDiffuse());
-      shader.setVec3(gl, "lights["+i+"].specular", lights[i].getMaterial().getSpecular());
+      shader.setVec3(gl, "lights["+i+"].ambient", lights[i].getAmbient());
+      shader.setVec3(gl, "lights["+i+"].diffuse", lights[i].getDiffuse());
+      shader.setVec3(gl, "lights["+i+"].specular", lights[i].getSpecular());
+    }
+
+    SpotLight spotlight = enabledLights.stream()
+            .filter(SpotLight.class::isInstance)
+            .map(SpotLight.class::cast)         // cast to subclass
+            .findFirst()
+            .orElse(null);
+    if (spotlight != null) {
+      shader.setVec3(gl, "spotlight.position", spotlight.getPosition());
+      shader.setVec3(gl, "spotlight.direction", spotlight.getDirection());
+      shader.setVec3(gl, "spotlight.ambient", spotlight.getAmbient());
+      shader.setVec3(gl, "spotlight.diffuse", spotlight.getDiffuse());
+      shader.setVec3(gl, "spotlight.specular", spotlight.getSpecular());
+      shader.setFloat(gl, "spotlight.cutoff", (float) Math.cos(Math.toRadians(spotlight.getCutoff())));
+      shader.setFloat(gl, "spotlight.outerCutoff", (float) Math.cos(Math.toRadians(spotlight.getOuterCutoff())));
+      shader.setFloat(gl, "spotlight.constant", spotlight.getConstant());
+      shader.setFloat(gl, "spotlight.linear", spotlight.getLinear());
+      shader.setFloat(gl, "spotlight.quadratic", spotlight.getQuadratic());
     }
 
     shader.setVec3(gl, "material.ambient", material.getAmbient());

@@ -60,4 +60,19 @@ public class SGNode {
     }
   }
 
+  public Vec3 getPosition() {
+    return new Vec3(worldTransform.get(0, 3),
+            worldTransform.get(1, 3),
+            worldTransform.get(2, 3));
+  }
+
+  public Vec3 getDirection() {
+    // Assuming forward direction corresponds to the z-axis
+    Vec3 returnValue = new Vec3(worldTransform.get(0, 2),
+            worldTransform.get(1, 2),
+            worldTransform.get(2, 2));
+    returnValue.normalize();
+    return returnValue;
+  }
+
 }

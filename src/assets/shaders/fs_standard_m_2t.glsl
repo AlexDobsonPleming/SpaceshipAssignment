@@ -17,9 +17,26 @@ struct Light {
   vec3 specular;
 };
 
+struct Spotlight {
+  vec3 position;
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+  vec3 direction;
+  float cutoff;
+  float outerCutoff;
+  float constant;
+  float linear;
+  float quadratic;
+};
+
+
+
 #define MAX_POINT_LIGHTS 10  
 uniform Light lights[MAX_POINT_LIGHTS];
 uniform int numLights;
+
+uniform Spotlight spotlight;
 
 struct Material {
   vec3 ambient;
@@ -48,13 +65,43 @@ vec3 CalcPointLight(Light light, vec3 norm, vec3 aPos, vec3 viewDir) {
   return result;
 }
 
+vec3 CalcSpotlight(Spotlight light, vec3 norm, vec3 aPos, vec3 viewDir) {
+  vec4 texture_colour = texture(first_texture, aTexCoord);
+
+  if (texture_colour.a < 0.1) discard;
+
+  vec3 lightDir = normalize(light.position - aPos);
+  float theta = dot(lightDir, normalize(-light.direction));
+
+  if (theta > light.outerCutoff) { // Within the cone of light
+    // Diffuse
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * texture(first_texture, aTexCoord).rgb;
+
+    // Specular
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * vec3(texture(second_texture, aTexCoord));
+
+    // Attenuation
+    float distance = length(light.position - aPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+    return attenuation * (diffuse + specular);
+  } else {
+    return vec3(0.0); // Outside the cone
+  }
+}
+
 void main() {
   vec3 norm = normalize(aNormal);
   vec3 viewDir = normalize(viewPos - aPos);
 
   vec3 result = vec3(0.0);
-  for(int i = 0; i < numLights; i++)
-    result += CalcPointLight(lights[i], norm, aPos, viewDir); 
+  for (int i = 0; i < numLights; i++)
+  result += CalcPointLight(lights[i], norm, aPos, viewDir);
+
+  result += CalcSpotlight(spotlight, norm, aPos, viewDir);
 
   fragColor = vec4(result, 1.0);
 }

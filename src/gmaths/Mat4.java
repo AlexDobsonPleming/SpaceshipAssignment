@@ -28,6 +28,10 @@ public class Mat4 {   // row column formulation
   public void set(int r, int c, float f) {
     values[r][c] = f;
   }
+
+  public float get(int row, int col) {
+    return values[row][col];
+  }
   
   private void makeZero() {
     for (int i=0; i<4; ++i) {

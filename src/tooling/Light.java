@@ -2,52 +2,62 @@ package tooling;
 
 import gmaths.*;
 import java.nio.*;
+import java.util.function.Supplier;
+
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 
-public class Light {
+public class Light implements ILight {
   
   private Material material;
-  private Vec3 position;
+
   private Mat4 model;
   private Shader shader;
   private Camera camera;
-    
-  public Light(GL3 gl) {
-    material = new Material();
-    material.setAmbient(0.5f, 0.5f, 0.5f);
-    material.setDiffuse(0.8f, 0.8f, 0.8f);
-    material.setSpecular(0.8f, 0.8f, 0.8f);
-    position = new Vec3(3f,2f,1f);
+
+  private Supplier<Vec3> positionGetter;
+  private Vec3 ambient, diffuse, specular;
+
+  private boolean enabled = true;
+
+  public Vec3 getAmbient() {
+    return new Vec3(ambient);
+  }
+  public Vec3 getDiffuse() {
+    return new Vec3(diffuse);
+  }
+  public Vec3 getSpecular() {
+    return new Vec3(specular);
+  }
+
+  public Light(GL3 gl, Supplier<Vec3> position, Vec3 ambient, Vec3 diffuse, Vec3 specular) {
+    this.ambient = ambient;
+    this.diffuse = diffuse;
+    this.specular = specular;
+    this.positionGetter = position;
     model = new Mat4(1);
     shader = new Shader(gl, "assets/shaders/vs_light_01.glsl", "assets/shaders/fs_light_01.glsl");
     fillBuffers(gl);
   }
-  
-  public void setPosition(Vec3 v) {
-    position.x = v.x;
-    position.y = v.y;
-    position.z = v.z;
-  }
-  
-  public void setPosition(float x, float y, float z) {
-    position.x = x;
-    position.y = y;
-    position.z = z;
+
+  public Light(GL3 gl, Supplier<Vec3> position) {
+    this(
+            gl,
+            position,
+            new Vec3(0.5f, 0.5f, 0.5f),
+            new Vec3(0.8f, 0.8f, 0.8f),
+            new Vec3(0.8f, 0.8f, 0.8f)
+    );
   }
   
   public Vec3 getPosition() {
-    return position;
+    return positionGetter.get();
   }
-  
-  public void setMaterial(Material m) {
-    material = m;
-  }
-  
-  public Material getMaterial() {
-    return material;
-  }
-  
+
+  public void enable() { enabled = true; }
+  public void disable() { enabled = false; }
+  public boolean isEnabled() { return enabled;}
+
   public void setCamera(Camera camera) {
     this.camera = camera;
   }
@@ -55,7 +65,7 @@ public class Light {
   public void render(GL3 gl) {
     Mat4 model = new Mat4(1);
     model = Mat4.multiply(Mat4Transform.scale(0.3f,0.3f,0.3f), model);
-    model = Mat4.multiply(Mat4Transform.translate(position), model);
+    model = Mat4.multiply(Mat4Transform.translate(getPosition()), model);
     
     Mat4 mvpMatrix = Mat4.multiply(camera.getPerspectiveMatrix(), Mat4.multiply(camera.getViewMatrix(), model));
     
