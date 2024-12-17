@@ -147,7 +147,7 @@ public class M04_GLEventListener implements GLEventListener {
     // floor
 
 
-    room = new Room(gl, 16f,16f, camera, lights, textures);
+    room = new Room(gl, camera, lights, textures);
     
     robotOne = new RobotOne(gl, shapes, textures);
 
