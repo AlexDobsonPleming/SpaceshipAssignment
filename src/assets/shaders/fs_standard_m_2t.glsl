@@ -66,32 +66,39 @@ vec3 CalcPointLight(Light light, vec3 norm, vec3 aPos, vec3 viewDir) {
 }
 
 vec3 CalcSpotlight(Spotlight light, vec3 norm, vec3 aPos, vec3 viewDir) {
+  // Sample the diffuse texture and perform transparency check
   vec4 texture_colour = texture(first_texture, aTexCoord);
-
   if (texture_colour.a < 0.1) discard;
 
+  // Calculate light direction and spotlight cutoff
   vec3 lightDir = normalize(light.position - aPos);
   float theta = dot(lightDir, normalize(-light.direction));
 
-  if (theta > light.outerCutoff) { // Within the cone of light
-    // Diffuse
+  if (theta > light.outerCutoff) { // Within the cone of the spotlight
+    // Diffuse component
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * texture(first_texture, aTexCoord).rgb;
+    vec3 diffuse = light.diffuse * diff * texture_colour.rgb;
 
-    // Specular
+    // Specular component
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(second_texture, aTexCoord));
+
+    // Smooth spotlight edge intensity
+    float epsilon = light.outerCutoff - light.cutoff;
+    float intensity = clamp((theta - light.cutoff) / epsilon, 0.0, 1.0);
 
     // Attenuation
     float distance = length(light.position - aPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-    return attenuation * (diffuse + specular);
+    // Combine components
+    return intensity * attenuation * (diffuse + specular);
   } else {
-    return vec3(0.0); // Outside the cone
+    return vec3(0.0); // Outside the spotlight cone
   }
 }
+
 
 void main() {
   vec3 norm = normalize(aNormal);

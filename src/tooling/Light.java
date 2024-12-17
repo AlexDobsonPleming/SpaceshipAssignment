@@ -40,13 +40,17 @@ public class Light implements ILight {
     fillBuffers(gl);
   }
 
+  static final Vec3 defaultAmbient = new Vec3(0.5f, 0.5f, 0.5f);
+  static final Vec3 defaultDiffuse = new Vec3(0.8f, 0.8f, 0.8f);
+  static final Vec3 defaultSpecular = new Vec3(0.8f, 0.8f, 0.8f);
+
   public Light(GL3 gl, Supplier<Vec3> position) {
     this(
             gl,
             position,
-            new Vec3(0.5f, 0.5f, 0.5f),
-            new Vec3(0.8f, 0.8f, 0.8f),
-            new Vec3(0.8f, 0.8f, 0.8f)
+            defaultAmbient,
+            defaultDiffuse,
+            defaultSpecular
     );
   }
   

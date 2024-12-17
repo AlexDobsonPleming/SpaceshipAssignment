@@ -62,7 +62,8 @@ public class RobotTwo {
         body.addChild(translateAboveBody);
           translateAboveBody.addChild(antennae);
             antennae.addChild(translateAboveAntennae);
-              translateAboveAntennae.addChild(spotlight);
+              translateAboveAntennae.addChild(rotateSpotlight);
+                rotateSpotlight.addChild(spotlight);
         body.addChild(translateToLeftEye);
           translateToLeftEye.addChild(leftEye);
         body.addChild(translateToRightEye);
