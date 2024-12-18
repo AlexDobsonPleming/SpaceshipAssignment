@@ -9,10 +9,11 @@ import models.meshes.TwoTriangles;
 import tooling.*;
 
 /**
- * This class stores the Floor
+ * This class renders a surface
  *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
  */
 
 public class Surface {

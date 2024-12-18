@@ -11,12 +11,13 @@ import tooling.scenegraph.SGNode;
 import tooling.scenegraph.TransformNode;
 
 /**
- * This class stores the models.Robot
+ * This class encapsulates the robot on rails
  *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
  */
-//private class Point
+
 public class RobotTwo {
 
   private TextureLibrary textures;
@@ -102,7 +103,7 @@ public class RobotTwo {
     updateRailwayPosition(elapsedTime);
     rotateSpotlight.setTransform(Mat4Transform.rotateAroundY((angularVelocity * (float)elapsedTime) % 360));
 
-    root.update(); // IMPORTANT – the scene graph has changed
+    root.update();
   }
 
   public void intialiseTrackTime() {

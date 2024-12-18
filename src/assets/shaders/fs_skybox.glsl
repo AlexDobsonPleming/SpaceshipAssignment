@@ -1,4 +1,7 @@
 #version 330 core
+// Alexander Dobson-Pleming
+// adobson-pleming1@sheffield.ac.uk
+// I declare that this is my own work
 out vec4 FragColor;
 
 in vec3 TexCoords;

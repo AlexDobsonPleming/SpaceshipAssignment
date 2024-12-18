@@ -8,10 +8,11 @@ import tooling.Camera;
 import tooling.Light;
 
 /**
- * This class stores the Floor
+ * This class encapsulates rendering the room
  *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
  */
 
 public class Room {
@@ -19,14 +20,14 @@ public class Room {
   private Surface floor;
   private Surface ceiling;
   private Surface rearWall;
-  private Window windowWall;
+  private Surface windowWall;
   private Surface wallBehindWindowTest;
   private Surface oppositeWall;
 
   private float floorToCeilingHeight = 10f;
   private float floorWidth = 16f;
   private float floorDepth = 32;
-   
+
   public Room(GL3 gl, Camera cameraIn, Light[] lights, TextureLibrary textures) {
     Texture chequerboard = textures.get("chequerboard");
     Texture asphalt = textures.get("asphalt");
@@ -51,7 +52,7 @@ public class Room {
     Mat4 windowWallRaise = Mat4Transform.translate(new Vec3(0, 0, -1 * floorToCeilingHeight / 2));
     Mat4 windowWallPushBack = Mat4Transform.translate(new Vec3(0, -1 * floorWidth / 2, 0));
     Mat4 windowWallTransform = Mat4.multiply(Mat4.multiply(windowWallRotate, windowWallRaise), windowWallPushBack);
-    windowWall = new Window(gl, floorDepth, floorToCeilingHeight, cameraIn, lights, window, windowWallTransform);
+    windowWall = new Surface(gl, floorDepth, floorToCeilingHeight, cameraIn, lights, window, windowWallTransform);
 
     Texture watt = textures.get("bridge");
     Mat4 wattWallRotate = Mat4.multiply(Mat4Transform.rotateAroundZ(270), Mat4Transform.rotateAroundY(90));

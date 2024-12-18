@@ -1,5 +1,12 @@
 package gmaths;
 
+/**
+ * A class for a 4D vector.
+ * This includes two components: x, y z and w
+ *
+ * @author    Dr Steve Maddock
+ * @email     s.maddock@sheffield.ac.uk
+ */
 public final class Vec4 {
   public float x;
   public float y;

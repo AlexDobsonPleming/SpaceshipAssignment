@@ -1,5 +1,11 @@
 package gmaths;
 
+/**
+ * This class handles importing texture. Taken from the labs
+ *
+ * @author    Dr Steve Maddock
+ * @email     s.maddock@sheffield.ac.uk
+ */
 public class Mat4 {   // row column formulation
 
   private float[][] values;

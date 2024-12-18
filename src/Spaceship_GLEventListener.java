@@ -7,10 +7,22 @@ import tooling.Light;
 import tooling.PointLight;
 import tooling.SpotLight;
 
+/**
+ * This class captures OpenGL events for the spaceship canvas
+ * it's a combination of lab clas code and my code
+ *
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ *  @author    Dr Steve Maddock
+ *  @email     s.maddock@sheffield.ac.uk
+ * I declare that the sections marked as my code are my own work
+ */
+
 public class Spaceship_GLEventListener implements GLEventListener {
   
   private static final boolean DISPLAY_SHADERS = false;
-  
+
+  //lab code
   public Spaceship_GLEventListener(Camera camera) {
     this.camera = camera;
     this.camera.setPosition(new Vec3(4f,12f,18f));
@@ -22,6 +34,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
    */
 
   /* Initialisation */
+  //lab code
   public void init(GLAutoDrawable drawable) {   
     GL3 gl = drawable.getGL().getGL3();
     System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
@@ -39,6 +52,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
   }
   
   /* Called to indicate the drawing surface has been moved and/or resized  */
+  //lab code
   public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     GL3 gl = drawable.getGL().getGL3();
     gl.glViewport(x, y, width, height);
@@ -47,30 +61,33 @@ public class Spaceship_GLEventListener implements GLEventListener {
   }
 
   /* Draw */
+  //lab code
   public void display(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
     render(gl);
   }
 
   /* Clean up memory, if necessary */
+  //lab code
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
     for (Light light : lights) {
       light.dispose(gl);
     }
+    //my code
     room.dispose(gl);
     robotOne.dispose(gl);
     robotTwo.dispose(gl);
     globe.dispose(gl);
   }
   
-  
+
   // ***************************************************
   /* INTERACTION
    *
    *
    */
-   
+  //lab code
   private boolean animation = false;
   private double savedTime = 0;
    
@@ -91,7 +108,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
    * This will be added to in later examples.
    */
 
-  // textures
+  // this is my code
   private TextureLibrary textures;
   private Shapes shapes;
 
@@ -103,7 +120,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
   private RobotTwo robotTwo;
   private Globe globe;
 
-
+  // this is my code
   private void initialise(GL3 gl) {
     createRandomNumbers();
 
@@ -138,7 +155,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
 
     lights[0] = new PointLight(gl, this::getPointLightPosition);
     lights[0].setCamera(camera);
-//    lights[0].disable();
 
     lights[1] = new SpotLight(
             gl,
@@ -151,7 +167,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
   }
  
   // animation control of start stop is poor and needs improving
-  
+
+  //this is my code
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
     skybox.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix());
@@ -166,7 +183,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     globe.render(gl, elapsedTime);
   }
 
-  
+  // this is lab code
   // The light's position is continually being changed, so needs to be calculated for each frame.
   private Vec3 getPointLightPosition() {
     double elapsedTime = getSeconds()-startTime;
@@ -190,11 +207,13 @@ public class Spaceship_GLEventListener implements GLEventListener {
 
   // ***************************************************
   /* An array of random numbers
-   */ 
-  
+   */
+
+  // this is lab code
   private int NUM_RANDOMS = 1000;
   private float[] randoms;
-  
+
+  // this is lab code
   private void createRandomNumbers() {
     randoms = new float[NUM_RANDOMS];
     for (int i=0; i<NUM_RANDOMS; ++i) {

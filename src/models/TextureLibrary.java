@@ -9,6 +9,13 @@ import com.jogamp.opengl.*;
 
 import com.jogamp.opengl.util.texture.*;
 
+/**
+ * This class handles importing texture. Taken from the labs
+ *
+ * @author    Dr Steve Maddock
+ * @email     s.maddock@sheffield.ac.uk
+ */
+
 public class TextureLibrary {
   
   private Map<String,Texture> textures;

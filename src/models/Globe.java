@@ -11,10 +11,11 @@ import tooling.*;
 import tooling.scenegraph.*;
 
 /**
- * This class stores the models.Robot
+ * This class encapsulates the globe scene graph
  *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
  */
 
 public class Globe {
@@ -59,7 +60,7 @@ public class Globe {
               translateToTopOfPedestal.addChild(globeRotate);
                 globeRotate.addChild(globe);
 
-      root.update();  // IMPORTANT – must be done every time any part of the scene graph changes
+      root.update();
 
   }
 
@@ -74,7 +75,7 @@ public class Globe {
 
     globeRotate.setTransform(Mat4Transform.rotateAroundY((angularVelocity * (float)elapsedTime) % 360));
 
-    root.update(); // IMPORTANT – the scene graph has changed
+    root.update();
   }
 
   public void dispose(GL3 gl) {

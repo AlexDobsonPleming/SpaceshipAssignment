@@ -9,6 +9,14 @@ import models.meshes.Cube;
 import models.meshes.Sphere;
 import tooling.*;
 
+/**
+ * This class handles creating Model objects from meshes
+ *
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
+
+ */
 public class Shapes {
     private Light[] lights;
     private Camera camera;

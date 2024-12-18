@@ -8,6 +8,15 @@ import tooling.Shader;
 
 import java.io.File;
 
+/**
+ * This class renders the skybox using a cubemap and a (lack of) depth mask
+ * Please refer to textures attribution for the texture copyright
+ *
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
+ */
+
 public class Skybox {
 
     private int cubemapTexture;
@@ -31,8 +40,8 @@ public class Skybox {
     }
 
     private void setupSkybox(GL3 gl) {
+        //these vertices are from the lovely tutorial at https://learnopengl.com/Advanced-OpenGL/Cubemaps
         float[] skyboxVertices = {
-                // Positions
                 -1.0f,  1.0f, -1.0f,
                 -1.0f, -1.0f, -1.0f,
                 1.0f, -1.0f, -1.0f,

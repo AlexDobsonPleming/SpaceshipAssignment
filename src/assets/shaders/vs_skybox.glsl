@@ -1,4 +1,7 @@
 #version 330 core
+// Alexander Dobson-Pleming
+// adobson-pleming1@sheffield.ac.uk
+// I declare that this is my own work
 layout (location = 0) in vec3 aPos;
 
 out vec3 TexCoords;

@@ -7,10 +7,11 @@ import tooling.*;
 import tooling.scenegraph.*;
 
 /**
- * This class stores the models.Robot
+ * This class encapsulates the dancing robot
  *
- * @author    Dr Steve Maddock
- * @version   1.0 (31/08/2022)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that this code is my own work
  */
 
 public class RobotOne {
@@ -20,7 +21,7 @@ public class RobotOne {
   private Shapes shapes;
   private Model sphere;
   private Model cube;
-  private SGNode twoBranchRoot;
+  private SGNode root;
 
   private TransformNode translateX, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
   private float xPosition = 0;
@@ -34,7 +35,7 @@ public class RobotOne {
 
     shapes = shapeFactory;
 
-    twoBranchRoot = new NameNode("two-branch structure");
+    root = new NameNode("two-branch structure");
 
 
 
@@ -72,7 +73,7 @@ public class RobotOne {
     waveRight = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(0));
 
 
-    twoBranchRoot.addChild(translateX);
+    root.addChild(translateX);
       translateX.addChild(base);
         base.addChild(translateAboveBase);
           translateAboveBase.addChild(rotateLowerLeg);
@@ -96,32 +97,12 @@ public class RobotOne {
 
 
 
-      twoBranchRoot.update();  // IMPORTANT – must be done every time any part of the scene graph changes
+      root.update();  // IMPORTANT – must be done every time any part of the scene graph changes
 
   }
-
-
-
 
   public void render(GL3 gl) {
-    twoBranchRoot.draw(gl);
-  }
-
-  public void incXPosition() {
-    xPosition += 0.5f;
-    if (xPosition>5f) xPosition = 5f;
-    updateMove();
-  }
-   
-  public void decXPosition() {
-    xPosition -= 0.5f;
-    if (xPosition<-5f) xPosition = -5f;
-    updateMove();
-  }
- 
-  private void updateMove() {
-    translateX.setTransform(Mat4Transform.translate(xPosition,0,0));
-    translateX.update();
+    root.draw(gl);
   }
 
 
@@ -142,7 +123,7 @@ public class RobotOne {
     waveRightAngle = -1 * waveRightAngleStart * (float) Math.sin(elapsedTime * 0.7f);
     waveRight.setTransform(Mat4Transform.rotateAroundZ(waveRightAngle));
 
-    twoBranchRoot.update(); // IMPORTANT – the scene graph has changed
+    root.update(); // IMPORTANT – the scene graph has changed
   }
 
 
