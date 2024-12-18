@@ -7,11 +7,11 @@ import tooling.Light;
 import tooling.PointLight;
 import tooling.SpotLight;
 
-public class M04_GLEventListener implements GLEventListener {
+public class Spaceship_GLEventListener implements GLEventListener {
   
   private static final boolean DISPLAY_SHADERS = false;
   
-  public M04_GLEventListener(Camera camera) {
+  public Spaceship_GLEventListener(Camera camera) {
     this.camera = camera;
     this.camera.setPosition(new Vec3(4f,12f,18f));
   }

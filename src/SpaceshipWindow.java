@@ -9,14 +9,15 @@ import com.jogamp.opengl.util.FPSAnimator;
 import tooling.Camera;
 
 //this class was originally the lab code but has been so heavily edited it is now largely my code
-//the only unchanged bit from the lab has been marked as such
+
+//this is my code
 public class SpaceshipWindow extends JFrame {
   
   private static final int WIDTH = 1024;
   private static final int HEIGHT = 768;
   private static final Dimension dimension = new Dimension(WIDTH, HEIGHT);
   private GLCanvas canvas;
-  private M04_GLEventListener glEventListener;
+  private final Spaceship_GLEventListener glEventListener;
   private final FPSAnimator animator; 
   private Camera camera;
 
@@ -46,10 +47,11 @@ public class SpaceshipWindow extends JFrame {
       System.out.println("Only one monitor detected.");
     }
 
+    //this is lab code
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));
     canvas = new GLCanvas(glcapabilities);
     camera = new Camera(Camera.DEFAULT_POSITION, Camera.DEFAULT_TARGET, Camera.DEFAULT_UP);
-    glEventListener = new M04_GLEventListener(camera);
+    glEventListener = new Spaceship_GLEventListener(camera);
     canvas.addGLEventListener(glEventListener);
     canvas.addMouseMotionListener(new MyMouseInput(camera));
     canvas.addKeyListener(new MyKeyboardInput(camera));
@@ -62,6 +64,8 @@ public class SpaceshipWindow extends JFrame {
         quitItem.addActionListener(this::quit_click);
         fileMenu.add(quitItem);
     menuBar.add(fileMenu);
+
+    //this is my code
     
     JPanel bottomPanel = new JPanel();
     JLabel label = new JLabel("Camera", JLabel.LEFT);
