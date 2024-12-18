@@ -84,25 +84,7 @@ public class M04_GLEventListener implements GLEventListener {
     double elapsedTime = getSeconds()-startTime;
     savedTime = elapsedTime;
   }
-   
-  public void incXPosition() {
-    robotOne.incXPosition();
-  }
-   
-  public void decXPosition() {
-    robotOne.decXPosition();
-  }
-  
-  public void loweredArms() {
-    stopAnimation();
-//    robot.loweredArms();
-  }
-   
-  public void raisedArms() {
-    stopAnimation();
-//    robot.raisedArms();
-  }
-  
+
   // ***************************************************
   /* THE SCENE
    * Now define all the methods to handle the scene.
