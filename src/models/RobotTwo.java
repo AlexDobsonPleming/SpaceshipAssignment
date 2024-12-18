@@ -3,6 +3,7 @@ package models;
 import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
+import gmaths.Vec2;
 import gmaths.Vec3;
 import tooling.Model;
 import tooling.scenegraph.NameNode;
@@ -15,7 +16,7 @@ import tooling.scenegraph.TransformNode;
  * @author    Dr Steve Maddock
  * @version   1.0 (31/08/2022)
  */
-
+//private class Point
 public class RobotTwo {
 
   private TextureLibrary textures;
@@ -29,6 +30,16 @@ public class RobotTwo {
 
   private TransformNode translateRoot, rotateSpotlight;
 
+  private Vec2[] anchorPoints = {
+          new Vec2(-6.25f, 13.5f),
+          new Vec2(-6.25f, -11f),
+          new Vec2(6.25f, -11f),
+          new Vec2(6.25f, 13.5f),
+  };
+  private double speed = 5.0;
+  private double[] segmentDurations;
+  private double totalPathTime = 0;
+
   public RobotTwo(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
 
     shapes = shapeFactory;
@@ -37,6 +48,8 @@ public class RobotTwo {
 
     sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
     cube = shapes.makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
+
+    intialiseTrackTime();
 
     Branch body = new Branch(cube, 1.5f,1f, 1f);
     Branch leftEye = new Branch(sphere, 0.3f, 0.3f, 0.3f);
@@ -53,7 +66,7 @@ public class RobotTwo {
 
 
     // The next few are global variables so they can be updated in other methods
-    translateRoot = new TransformNode("translate root", Mat4Transform.translate(3,0,-3));
+    translateRoot = new TransformNode("translate root", translateXZ(anchorPoints[0]));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
 
 
@@ -69,10 +82,12 @@ public class RobotTwo {
         body.addChild(translateToRightEye);
           translateToRightEye.addChild(rightEye);
 
-      root.update();  // IMPORTANT – must be done every time any part of the scene graph changes
-
+      root.update();
   }
 
+  private Mat4 translateXZ(Vec2 point) {
+    return Mat4Transform.translate(point.x, 0, point.y);
+  }
 
   public void render(GL3 gl, double elapsedTime) {
     updateAnimation(elapsedTime);
@@ -81,10 +96,49 @@ public class RobotTwo {
 
   public void updateAnimation(double elapsedTime) {
     float angularVelocity = 45.0f;
-
+    updateRailwayPosition(elapsedTime);
     rotateSpotlight.setTransform(Mat4Transform.rotateAroundY((angularVelocity * (float)elapsedTime) % 360));
 
     root.update(); // IMPORTANT – the scene graph has changed
+  }
+
+  public void intialiseTrackTime() {
+    segmentDurations = new double[anchorPoints.length];
+
+    for (int i = 0; i < anchorPoints.length; i++) {
+      Vec2 p1 = anchorPoints[i];
+      Vec2 p2 = anchorPoints[(i + 1) % anchorPoints.length]; // Loop back to start
+      double distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+      segmentDurations[i] = distance / speed;
+      totalPathTime += segmentDurations[i];
+    }
+  }
+
+  public void updateRailwayPosition(double elapsedTime) {
+    double adjustedTime = elapsedTime % totalPathTime;
+
+    double cumulativeDuration = 0;
+
+    for (int i = 0; i < segmentDurations.length; i++) {
+      if (adjustedTime < cumulativeDuration + segmentDurations[i]) {
+        // Found the current segment
+        double segmentProgress = (adjustedTime - cumulativeDuration) / segmentDurations[i];
+        Vec2 start = anchorPoints[i];
+        Vec2 end = anchorPoints[(i + 1) % anchorPoints.length];
+        Vec2 progressBetweenCorners = linerInterpolate(start, end, (float)segmentProgress);
+        translateRoot.setTransform(translateXZ(progressBetweenCorners));
+        return;
+      }
+      cumulativeDuration += segmentDurations[i];
+    }
+
+  }
+
+  private Vec2 linerInterpolate(Vec2 start, Vec2 end, float t) {
+    return new Vec2(
+            start.x + (end.x - start.x) * t,
+            start.y + (end.y - start.y) * t
+    );
   }
 
   public Vec3 getSpotlightPosition() {
@@ -94,8 +148,6 @@ public class RobotTwo {
   public Vec3 getSpotlightDirection() {
     return spotlight.getNode().getDirection();
   }
-
-
 
   public void dispose(GL3 gl) {
     sphere.dispose(gl);

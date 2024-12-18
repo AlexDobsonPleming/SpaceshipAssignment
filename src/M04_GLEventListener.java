@@ -138,6 +138,7 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
+    textures.add(gl, "floor", "assets/textures/floor.jpg");
 
     lights = new Light[2];
 
