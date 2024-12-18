@@ -138,6 +138,7 @@ public class M04_GLEventListener implements GLEventListener {
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
+    textures.add(gl, "floor", "assets/textures/floor.jpg");
 
     lights = new Light[2];
 
@@ -147,7 +148,7 @@ public class M04_GLEventListener implements GLEventListener {
     // floor
 
 
-    room = new Room(gl, 16f,16f, camera, lights, textures);
+    room = new Room(gl, camera, lights, textures);
     
     robotOne = new RobotOne(gl, shapes, textures);
 

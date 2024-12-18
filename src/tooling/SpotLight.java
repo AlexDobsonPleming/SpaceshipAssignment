@@ -13,6 +13,10 @@ public class SpotLight extends Light implements ISpotLight {
     private float linear;
     private float quadratic;
 
+    static final Vec3 defaultAmbient = new Vec3(0.5f, 0.5f, 0.5f);
+    static final Vec3 defaultDiffuse = new Vec3(2f, 2f, 2f);
+    static final Vec3 defaultSpecular = new Vec3(5f, 5f, 5f);
+
     public SpotLight(
             GL3 gl,
             Supplier<Vec3> positionGetter,
@@ -23,7 +27,7 @@ public class SpotLight extends Light implements ISpotLight {
             float linear,
             float quadratic
             ) {
-        super(gl, positionGetter);
+        super(gl, positionGetter, defaultAmbient, defaultDiffuse, defaultSpecular);
 
         this.directionGetter = directionGetter;
         this.cutoff = cutoff;
