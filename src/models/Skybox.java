@@ -143,17 +143,24 @@ public class Skybox {
         return textureID;
     }
 
-    public void render(GL3 gl, Mat4 view, Mat4 projection) {
+    public void render(GL3 gl, Mat4 view, Mat4 projection, double elapsedTime) {
         gl.glDepthFunc(GL.GL_LEQUAL);
         gl.glDepthMask(false);
 
         shader.use(gl);
 
+        // rotate skybox
+        float rotationSpeed = 3.0f;
+        float angle = (float) (rotationSpeed * elapsedTime);
+        Mat4 rotationMatrix = Mat4Transform.rotateAroundY(angle);
+
+
         Mat4 viewWithoutTranslation = new Mat4(view);
         viewWithoutTranslation.set(0, 3, 0);
         viewWithoutTranslation.set(1, 3, 0);
         viewWithoutTranslation.set(2, 3, 0);
-        shader.setFloatArray(gl, "view", viewWithoutTranslation.toFloatArrayForGLSL());
+        Mat4 rotatedView = Mat4.multiply(rotationMatrix, viewWithoutTranslation);
+        shader.setFloatArray(gl, "view", rotatedView.toFloatArrayForGLSL());
         shader.setFloatArray(gl, "projection", projection.toFloatArrayForGLSL());
 
         gl.glBindVertexArray(skyboxVAO);

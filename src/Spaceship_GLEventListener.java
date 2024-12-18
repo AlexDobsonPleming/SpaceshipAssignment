@@ -175,11 +175,12 @@ public class Spaceship_GLEventListener implements GLEventListener {
 
   //this is my code
   private void render(GL3 gl) {
+    double elapsedTime = getSeconds()-startTime;
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-    skybox.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix());
+    skybox.render(gl, camera.getViewMatrix(), camera.getPerspectiveMatrix(), elapsedTime);
     lights[0].render(gl);
     room.render(gl);
-    double elapsedTime = getSeconds()-startTime;
+
     if (animation) {
       robotOne.updateAnimation(elapsedTime);
     }
