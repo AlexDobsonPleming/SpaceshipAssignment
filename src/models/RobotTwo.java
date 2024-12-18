@@ -28,7 +28,7 @@ public class RobotTwo {
 
   private Branch spotlight;
 
-  private TransformNode translateRoot, rotateSpotlight;
+  private TransformNode translateRoot, rotationRoot, rotateSpotlight;
 
   private Vec2[] anchorPoints = {
           new Vec2(-6.25f, 13.5f),
@@ -58,6 +58,7 @@ public class RobotTwo {
     spotlight = new Branch(cube, 0.3f, 0.3f, 0.3f);
 
     TransformNode translateAboveBody = new TransformNode("translate above base", Mat4Transform.translate(0, body.scaleY, 0));
+    TransformNode baseRotation = new TransformNode("base rotation", Mat4Transform.rotateAroundY(90));
 
     TransformNode translateToLeftEye = new TransformNode("translate left eye",Mat4Transform.translate(0, body.scaleY,0));
     TransformNode translateToRightEye = new TransformNode("translate right eye",Mat4Transform.translate(0, body.scaleY,0));
@@ -65,22 +66,24 @@ public class RobotTwo {
     TransformNode translateAboveAntennae = new TransformNode("translate right eye",Mat4Transform.translate(0, antennae.scaleY,0));
 
 
-    // The next few are global variables so they can be updated in other methods
     translateRoot = new TransformNode("translate root", translateXZ(anchorPoints[0]));
+    rotationRoot = new TransformNode("rotation root", Mat4Transform.rotateAroundY(0));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
 
 
     root.addChild(translateRoot);
-      translateRoot.addChild(body);
-        body.addChild(translateAboveBody);
-          translateAboveBody.addChild(antennae);
-            antennae.addChild(translateAboveAntennae);
-              translateAboveAntennae.addChild(rotateSpotlight);
-                rotateSpotlight.addChild(spotlight);
-        body.addChild(translateToLeftEye);
-          translateToLeftEye.addChild(leftEye);
-        body.addChild(translateToRightEye);
-          translateToRightEye.addChild(rightEye);
+      translateRoot.addChild(baseRotation);
+        baseRotation.addChild(rotationRoot);
+          rotationRoot.addChild(body);
+            body.addChild(translateAboveBody);
+              translateAboveBody.addChild(antennae);
+                antennae.addChild(translateAboveAntennae);
+                  translateAboveAntennae.addChild(rotateSpotlight);
+                    rotateSpotlight.addChild(spotlight);
+            body.addChild(translateToLeftEye);
+              translateToLeftEye.addChild(leftEye);
+            body.addChild(translateToRightEye);
+              translateToRightEye.addChild(rightEye);
 
       root.update();
   }
@@ -114,6 +117,8 @@ public class RobotTwo {
     }
   }
 
+  private int previousSegment = -1; // Track the last segment index
+
   public void updateRailwayPosition(double elapsedTime) {
     double adjustedTime = elapsedTime % totalPathTime;
 
@@ -121,7 +126,11 @@ public class RobotTwo {
 
     for (int i = 0; i < segmentDurations.length; i++) {
       if (adjustedTime < cumulativeDuration + segmentDurations[i]) {
-        // Found the current segment
+        if (previousSegment != i) {
+          previousSegment = i;
+          rotationRoot.setTransform(Mat4Transform.rotateAroundY(90 * i));
+          return;
+        }
         double segmentProgress = (adjustedTime - cumulativeDuration) / segmentDurations[i];
         Vec2 start = anchorPoints[i];
         Vec2 end = anchorPoints[(i + 1) % anchorPoints.length];
