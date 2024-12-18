@@ -3,6 +3,12 @@ package tooling.scenegraph;
 import com.jogamp.opengl.*;
 import tooling.Model;
 
+/**
+ * This class encapsulates a TransformNode
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+ */
 public class ModelNode extends SGNode {
 
   protected Model model;

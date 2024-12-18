@@ -13,8 +13,21 @@ import com.jogamp.opengl.util.texture.awt.*;
 import com.jogamp.opengl.util.texture.spi.JPEGImage;
 import tooling.*;
 
+/**
+ * This class encapuslates rendering a model
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ *
+ * It is a combination of lab code and my code
+ * I declare that any sections marked as my code are wholly my own work
+ */
+
 public class Model {
 
+  //lab code
   private String name;
   private Mesh mesh;
   private Mat4 modelMatrix;
@@ -25,6 +38,7 @@ public class Model {
   private Texture diffuse;
   private Texture specular;
 
+  //lab code
   public Model() {
     name = null;
     mesh = null;
@@ -35,6 +49,7 @@ public class Model {
     shader = null;
   }
 
+  //lab code
   public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
                              Camera camera, Texture diffuse, Texture specular) {
     this.name = name;
@@ -48,61 +63,74 @@ public class Model {
     this.specular = specular;
   }
 
+  //lab code
   public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
                              Camera camera, Texture diffuse) {
     this(name, mesh, modelMatrix, shader, material, lights, camera, diffuse, null);
   }
 
+  //lab code
   public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
                              Camera camera) {
     this(name, mesh, modelMatrix, shader, material, lights, camera, null, null);
   }
 
+  //lab code
   public void setName(String s) {
     this.name = s;
   }
 
+  //lab code
   public void setMesh(Mesh m) {
     this.mesh = m;
   }
 
+  //lab code
   public void setModelMatrix(Mat4 m) {
     modelMatrix = m;
   }
 
+  //lab code
   public void setMaterial(Material material) {
     this.material = material;
   }
 
+  //lab code
   public void setShader(Shader shader) {
     this.shader = shader;
   }
 
+  //lab code
   public void setCamera(Camera camera) {
     this.camera = camera;
   }
 
+  //lab code
   public void setLights(Light[] lights) {
     this.lights = lights;
   }
 
+  //lab code
   public void setDiffuse(Texture t) {
     this.diffuse = t;
   }
 
+  //lab code
   public void setSpecular(Texture t) {
     this.specular = t;
   }
 
+  //lab code
   public void renderName(GL3 gl) {
     System.out.println("Name = " + name);
   }
 
+  //lab code
   public void render(GL3 gl) {
     render(gl, modelMatrix);
   }
 
-  // second version of render is so that modelMatrix can be overriden with a new parameter
+  //my code
   public void render(GL3 gl, Mat4 modelMatrix) {
     if (mesh_null()) {
       System.out.println("Error: null in model render");
@@ -113,6 +141,7 @@ public class Model {
     shader.use(gl);
     shader.setFloatArray(gl, "model", modelMatrix.toFloatArrayForGLSL());
     shader.setFloatArray(gl, "mvpMatrix", mvpMatrix.toFloatArrayForGLSL());
+
 
     shader.setVec3(gl, "viewPos", camera.getPosition());
 
@@ -168,14 +197,15 @@ public class Model {
       specular.bind(gl);
     }
 
-    // then render the mesh
     mesh.render(gl);
   }
 
+  //lab code
   private boolean mesh_null() {
     return (mesh==null);
   }
 
+  //lab code
   public void dispose(GL3 gl) {
     mesh.dispose(gl);  // only need to dispose of mesh
   }

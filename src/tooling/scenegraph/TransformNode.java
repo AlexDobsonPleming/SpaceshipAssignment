@@ -2,6 +2,12 @@ package tooling.scenegraph;
 
 import gmaths.*;
 
+/**
+ * This class encapsulates a TransformNode
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+ */
 public class TransformNode extends SGNode {
 
   private Mat4 transform;

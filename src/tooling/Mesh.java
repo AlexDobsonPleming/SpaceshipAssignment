@@ -5,6 +5,13 @@ import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 import models.meshes.IMesh;
 
+/**
+ * This class encapsulates rendering a mesh
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+
+ */
 public class Mesh {
   
   private float[] vertices;

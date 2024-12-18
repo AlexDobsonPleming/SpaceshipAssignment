@@ -7,19 +7,35 @@ import java.util.function.Supplier;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 
+/**
+ * This class encapuslates rendering a model
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ *
+ * It is a combination of lab code and my code
+ * I declare that any sections marked as my code are wholly my own work
+ */
+
 public class Light implements ILight {
-  
+
+  //lab code
   private Material material;
 
   private Mat4 model;
   private Shader shader;
   private Camera camera;
 
+  //my code
   private Supplier<Vec3> positionGetter;
   private Vec3 ambient, diffuse, specular;
 
+  //my code
   private boolean enabled = true;
 
+  //my code
   public Vec3 getAmbient() {
     return new Vec3(ambient);
   }
@@ -30,6 +46,7 @@ public class Light implements ILight {
     return new Vec3(specular);
   }
 
+  //my code
   public Light(GL3 gl, Supplier<Vec3> position, Vec3 ambient, Vec3 diffuse, Vec3 specular) {
     this.ambient = ambient;
     this.diffuse = diffuse;
@@ -40,10 +57,12 @@ public class Light implements ILight {
     fillBuffers(gl);
   }
 
+  //my code
   static final Vec3 defaultAmbient = new Vec3(0.5f, 0.5f, 0.5f);
   static final Vec3 defaultDiffuse = new Vec3(0.8f, 0.8f, 0.8f);
   static final Vec3 defaultSpecular = new Vec3(0.8f, 0.8f, 0.8f);
 
+  //my code
   public Light(GL3 gl, Supplier<Vec3> position) {
     this(
             gl,
@@ -53,19 +72,23 @@ public class Light implements ILight {
             defaultSpecular
     );
   }
-  
+
+  //lab code
   public Vec3 getPosition() {
     return positionGetter.get();
   }
 
+  //my code
   public void enable() { enabled = true; }
   public void disable() { enabled = false; }
   public boolean isEnabled() { return enabled;}
 
+  //lab code
   public void setCamera(Camera camera) {
     this.camera = camera;
   }
-  
+
+  //lab code
   public void render(GL3 gl) {
     Mat4 model = new Mat4(1);
     model = Mat4.multiply(Mat4Transform.scale(0.3f,0.3f,0.3f), model);
@@ -91,7 +114,7 @@ public class Light implements ILight {
   /* THE DATA
    */
   // anticlockwise/counterclockwise ordering
-  
+    //lab code
     private float[] vertices = new float[] {  // x,y,z
       -0.5f, -0.5f, -0.5f,  // 0
       -0.5f, -0.5f,  0.5f,  // 1
@@ -117,7 +140,8 @@ public class Light implements ILight {
       2,3,7, // y +ve
       7,6,2  // y +ve
     };
-    
+
+  //lab code
   private int vertexStride = 3;
   private int vertexXYZFloats = 3;
   
@@ -125,10 +149,12 @@ public class Light implements ILight {
   /* THE LIGHT BUFFERS
    */
 
+  //lab code
   private int[] vertexBufferId = new int[1];
   private int[] vertexArrayId = new int[1];
   private int[] elementBufferId = new int[1];
-    
+
+  //lab code
   private void fillBuffers(GL3 gl) {
     gl.glGenVertexArrays(1, vertexArrayId, 0);
     gl.glBindVertexArray(vertexArrayId[0]);
