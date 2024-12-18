@@ -87,6 +87,10 @@ public class SpaceshipWindow extends JFrame {
     cameraToX.addActionListener(this::cameraX_click);
     bottomPanel.add(cameraToX);
 
+    JButton cameraToY = new JButton("Y");
+    cameraToY.addActionListener(this::cameraY_click);
+    bottomPanel.add(cameraToY);
+
     JButton cameraToZ = new JButton("Z");
     cameraToZ.addActionListener(this::cameraZ_click);
     bottomPanel.add(cameraToZ);
@@ -134,6 +138,10 @@ public class SpaceshipWindow extends JFrame {
 
   public void cameraX_click(ActionEvent e) {
     camera.setCamera(Camera.CameraType.X);
+    canvas.requestFocusInWindow();
+  }
+  public void cameraY_click(ActionEvent e) {
+    camera.setCamera(Camera.CameraType.Y);
     canvas.requestFocusInWindow();
   }
   public void cameraZ_click(ActionEvent e) {
