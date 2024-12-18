@@ -5,6 +5,7 @@ import gmaths.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
 import tooling.Camera;
+import tooling.ILight;
 import tooling.Light;
 
 /**
@@ -28,7 +29,7 @@ public class Room {
   private float floorWidth = 16f;
   private float floorDepth = 32;
 
-  public Room(GL3 gl, Camera cameraIn, Light[] lights, TextureLibrary textures) {
+  public Room(GL3 gl, Camera cameraIn, ILight[] lights, TextureLibrary textures) {
     Texture chequerboard = textures.get("chequerboard");
     Texture asphalt = textures.get("asphalt");
 

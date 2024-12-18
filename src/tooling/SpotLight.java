@@ -92,4 +92,9 @@ public class SpotLight extends Light implements ISpotLight {
     public float getQuadratic() {
         return quadratic;
     }
+
+    @Override
+    public String getDisplayName() {
+        return "Spotlight";
+    }
 }

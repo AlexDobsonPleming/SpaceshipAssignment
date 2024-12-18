@@ -7,8 +7,20 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import tooling.Camera;
+import tooling.ILight;
+import tooling.Light;
 
-//this class was originally the lab code but has been so heavily edited it is now largely my code
+/**
+ * This class runs the main window
+ *
+ * @author    Dr Steve Maddock
+ * @version   1.0 (15/10/2017)
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ *
+ * It is a combination of lab code and my code
+ * I declare that any sections marked as my code are wholly my own work
+ */
 
 //this is my code
 public class SpaceshipWindow extends JFrame {
@@ -83,21 +95,27 @@ public class SpaceshipWindow extends JFrame {
     cameraToXYZ.addActionListener(this::cameraXYZ_click);
     bottomPanel.add(cameraToXYZ);
 
-    JLabel generalLightLabel = new JLabel("General light:");
-    generalLightLabel.setBounds(10, 10, 100, 20);
-    JSlider generalLightSlider = new JSlider(0, 100, 50); // Range: 0-100, Default: 50
-    generalLightSlider.setBounds(120, 10, 150, 20);
-    generalLightSlider.addChangeListener(this::generalLightSlider_change);
-    bottomPanel.add(generalLightLabel);
-    bottomPanel.add(generalLightSlider);
+    JPanel lightControlPanel = new JPanel();
+    glEventListener.addPostInitRunner(() -> {
+      for (ILight light : glEventListener.getLights()) {
+        JLabel lightLabel = new JLabel(light.getDisplayName() + ":");
+        lightLabel.setBounds(10, 10, 100, 20);
+        JSlider lightSlider = new JSlider(0, 100, 50); // Range: 0-100, Default: 50
+        lightSlider.setBounds(120, 10, 150, 20);
+        final float multiplier = 0.01f;
+        lightSlider.setValue(Math.round(light.getScaleFactor()/ multiplier));
+        lightSlider.addChangeListener((ChangeEvent e) -> {
 
-    JLabel spotLightLabel = new JLabel("Spotlight:");
-    spotLightLabel.setBounds(10, 10, 100, 20);
-    JSlider spotLightSlider = new JSlider(0, 100, 50); // Range: 0-100, Default: 50
-    spotLightSlider.setBounds(120, 10, 150, 20);
-    spotLightSlider.addChangeListener(this::spotLightSlider_change);
-    bottomPanel.add(spotLightLabel);
-    bottomPanel.add(spotLightSlider);
+          light.setScaleFactor(multiplier * lightSlider.getValue());
+        });
+        lightControlPanel.add(lightLabel);
+        lightControlPanel.add(lightSlider);
+
+        lightControlPanel.revalidate();
+        lightControlPanel.repaint();
+      }
+    });
+    bottomPanel.add(lightControlPanel);
 
 
     this.add(bottomPanel, BorderLayout.SOUTH);
@@ -113,14 +131,6 @@ public class SpaceshipWindow extends JFrame {
     animator = new FPSAnimator(canvas, 60);
     animator.start();
   }
-
-  private void generalLightSlider_change(ChangeEvent changeEvent) {
-    //todo
-  }
-
-  private void spotLightSlider_change(ChangeEvent changeEvent) {
-  }
-
 
   public void cameraX_click(ActionEvent e) {
     camera.setCamera(Camera.CameraType.X);
@@ -167,6 +177,7 @@ class MyKeyboardInput extends KeyAdapter  {
   }
 }
 
+//lab code
 class MyMouseInput extends MouseMotionAdapter {
   private Point lastpoint;
   private Camera camera;
@@ -174,7 +185,8 @@ class MyMouseInput extends MouseMotionAdapter {
   public MyMouseInput(Camera camera) {
     this.camera = camera;
   }
-  
+
+  //lab code
     /**
    * mouse is used to control camera position
    *

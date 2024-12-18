@@ -34,7 +34,7 @@ public class Model {
   private Shader shader;
   private Material material;
   private Camera camera;
-  private Light[] lights;
+  private ILight[] lights;
   private Texture diffuse;
   private Texture specular;
 
@@ -50,7 +50,7 @@ public class Model {
   }
 
   //lab code
-  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
+  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
                              Camera camera, Texture diffuse, Texture specular) {
     this.name = name;
     this.mesh = mesh;
@@ -64,13 +64,13 @@ public class Model {
   }
 
   //lab code
-  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
+  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
                              Camera camera, Texture diffuse) {
     this(name, mesh, modelMatrix, shader, material, lights, camera, diffuse, null);
   }
 
   //lab code
-  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, Light[] lights,
+  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
                              Camera camera) {
     this(name, mesh, modelMatrix, shader, material, lights, camera, null, null);
   }
@@ -147,8 +147,8 @@ public class Model {
 
     shader.setInt(gl,"numLights", lights.length);
 
-    List<Light> enabledLights = Arrays.stream(lights)
-            .filter(Light::isEnabled)
+    List<ILight> enabledLights = Arrays.stream(lights)
+            .filter(ILight::isEnabled)
             .collect(Collectors.toList());
 
     PointLight[] pointLights = enabledLights.stream()

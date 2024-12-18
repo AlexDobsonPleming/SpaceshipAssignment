@@ -1,5 +1,6 @@
 package tooling;
 
+import com.jogamp.opengl.GL3;
 import gmaths.Vec3;
 
 /**
@@ -19,4 +20,12 @@ public interface ILight {
     void enable();
     void disable();
     boolean isEnabled();
+    String getDisplayName();
+    void setCamera(Camera camera);
+
+    void setScaleFactor(float scaleFactor);
+    float getScaleFactor();
+
+    void render(GL3 gl);
+    void dispose(GL3 gl);
 }

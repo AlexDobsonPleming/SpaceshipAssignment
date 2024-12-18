@@ -2,10 +2,10 @@ import gmaths.*;
 
 import com.jogamp.opengl.*;
 import models.*;
-import tooling.Camera;
-import tooling.Light;
-import tooling.PointLight;
-import tooling.SpotLight;
+import tooling.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class captures OpenGL events for the spaceship canvas
@@ -26,6 +26,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
   public Spaceship_GLEventListener(Camera camera) {
     this.camera = camera;
     this.camera.setPosition(new Vec3(4f,12f,18f));
+
+    lights = new Light[2];
   }
   
   // ***************************************************
@@ -71,7 +73,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
   //lab code
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
-    for (Light light : lights) {
+    for (ILight light : lights) {
       light.dispose(gl);
     }
     //my code
@@ -115,10 +117,11 @@ public class Spaceship_GLEventListener implements GLEventListener {
   private Camera camera;
   private Skybox skybox;
   private Room room;
-  private Light[] lights;
+  private ILight[] lights;
   private RobotOne robotOne;
   private RobotTwo robotTwo;
   private Globe globe;
+  private List<Runnable> postInitialisationRunners = new ArrayList<Runnable>();
 
   // this is my code
   private void initialise(GL3 gl) {
@@ -138,8 +141,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
     textures.add(gl, "floor", "assets/textures/floor.jpg");
-
-    lights = new Light[2];
 
     shapes = new Shapes(camera, lights);
 
@@ -164,7 +165,11 @@ public class Spaceship_GLEventListener implements GLEventListener {
     lights[1].setCamera(camera);
 
     globe = new Globe(gl, shapes, textures);
+
+    postInitialisationRunners.forEach(Runnable::run);
   }
+
+  public void addPostInitRunner(Runnable r) { postInitialisationRunners.add(r); }
  
   // animation control of start stop is poor and needs improving
 
@@ -182,6 +187,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
     robotTwo.render(gl, elapsedTime);
     globe.render(gl, elapsedTime);
   }
+
+  public ILight[] getLights() {return lights;}
 
   // this is lab code
   // The light's position is continually being changed, so needs to be calculated for each frame.

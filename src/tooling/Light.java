@@ -19,7 +19,7 @@ import com.jogamp.opengl.*;
  * I declare that any sections marked as my code are wholly my own work
  */
 
-public class Light implements ILight {
+public abstract class Light implements ILight {
 
   //lab code
   private Material material;
@@ -37,14 +37,24 @@ public class Light implements ILight {
 
   //my code
   public Vec3 getAmbient() {
-    return new Vec3(ambient);
+    Vec3 scaledAmbient = new Vec3(ambient);
+    scaledAmbient.multiply(scaleFactor);
+    return scaledAmbient;
   }
   public Vec3 getDiffuse() {
-    return new Vec3(diffuse);
+    Vec3 scaledDiffuse = new Vec3(diffuse);
+    scaledDiffuse.multiply(scaleFactor);
+    return scaledDiffuse;
   }
   public Vec3 getSpecular() {
-    return new Vec3(specular);
+    Vec3 scaledSpecular = new Vec3(specular);
+    scaledSpecular.multiply(scaleFactor);
+    return scaledSpecular;
   }
+
+  private float scaleFactor = 1.0f;
+  public void setScaleFactor(float scaleFactor) { this.scaleFactor = scaleFactor; }
+  public float getScaleFactor() { return scaleFactor; }
 
   //my code
   public Light(GL3 gl, Supplier<Vec3> position, Vec3 ambient, Vec3 diffuse, Vec3 specular) {
@@ -82,6 +92,8 @@ public class Light implements ILight {
   public void enable() { enabled = true; }
   public void disable() { enabled = false; }
   public boolean isEnabled() { return enabled;}
+
+  public abstract String getDisplayName();
 
   //lab code
   public void setCamera(Camera camera) {

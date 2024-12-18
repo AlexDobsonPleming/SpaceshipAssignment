@@ -19,12 +19,12 @@ import tooling.*;
 public class Surface {
 
   private Camera camera;
-  private Light[] lights;
+  private ILight[] lights;
 
   private Model surface;
 
 
-  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, Light[] lights, Texture texture1, Mat4 translateIn) {
+  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, ILight[] lights, Texture texture1, Mat4 translateIn) {
     camera = cameraIn;
     this.lights = lights;
 

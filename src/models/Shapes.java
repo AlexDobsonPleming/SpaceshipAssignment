@@ -18,10 +18,10 @@ import tooling.*;
 
  */
 public class Shapes {
-    private Light[] lights;
+    private ILight[] lights;
     private Camera camera;
 
-    public Shapes(Camera c, Light[] l) {
+    public Shapes(Camera c, ILight[] l) {
         camera = c;
         lights = l;
     }

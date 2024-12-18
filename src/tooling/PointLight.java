@@ -21,4 +21,9 @@ public class PointLight extends Light {
                 new Vec3(0.8f, 0.8f, 0.8f));
     }
 
+    @Override
+    public String getDisplayName() {
+        return "Point Light";
+    }
+
 }
