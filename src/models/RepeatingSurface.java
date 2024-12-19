@@ -16,7 +16,7 @@ import tooling.*;
  * I declare that this code is my own work
  */
 
-public class Surface {
+public class RepeatingSurface {
 
   private Camera camera;
   private ILight[] lights;
@@ -24,12 +24,12 @@ public class Surface {
   private Model surface;
 
 
-  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, ILight[] lights, Texture texture1, Mat4 translateIn) {
+  public RepeatingSurface(GL3 gl, float xSize, float zSize, Camera cameraIn, ILight[] lights, Texture texture1, Mat4 translateIn) {
     camera = cameraIn;
     this.lights = lights;
 
     String name = "floor";
-    Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
+    Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone(), 4.0f, 3.0f);
     Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_m_2t.glsl");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 scale = Mat4Transform.scale(xSize,1f,zSize);

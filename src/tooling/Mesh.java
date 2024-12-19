@@ -32,6 +32,24 @@ public class Mesh {
     this.indices = indices;
     fillBuffers(gl);
   }
+  public Mesh(GL3 gl, float[] vertices, int[] indices, float textureRepeatX, float textureRepeatY) {
+    this.vertices = adjustTextureCoordinates(vertices, textureRepeatX, textureRepeatY);
+    this.indices = indices;
+    fillBuffers(gl);
+  }
+
+  private float[] adjustTextureCoordinates(float[] vertices, float repeatX, float repeatY) {
+    float[] adjustedVertices = vertices.clone();
+    int stride = vertexStride;
+    int texOffset = vertexXYZFloats + vertexNormalFloats;
+
+    for (int i = 0; i < adjustedVertices.length; i += stride) {
+      adjustedVertices[i + texOffset] *= repeatX;
+      adjustedVertices[i + texOffset + 1] *= repeatY;
+    }
+
+    return adjustedVertices;
+  }
   
   public void render(GL3 gl) {
     gl.glBindVertexArray(vertexArrayId[0]);
