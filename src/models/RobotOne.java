@@ -120,9 +120,25 @@ public class RobotOne {
     this.alwaysDancing = alwaysDancing;
   }
 
+  private boolean wasDancing = alwaysDancing;
+  private double timePaused = 0;
+  private double timeSpentNotDancing = 0;
+  private boolean shouldDance() {
+    return alwaysDancing || dancing.get();
+  }
   public void render(GL3 gl, double elapsedTime) {
-    if (alwaysDancing || dancing.get()) {
-      updateAnimation(elapsedTime);
+    if (shouldDance() != wasDancing) {
+      if (wasDancing) {
+        //stopped dancing
+        timePaused = elapsedTime;
+      } else {
+        //started dancing again
+        timeSpentNotDancing += (elapsedTime - timePaused);
+      }
+      wasDancing = !wasDancing;
+    }
+    if (shouldDance()) {
+      updateAnimation(elapsedTime - timeSpentNotDancing);
     }
     root.draw(gl);
   }

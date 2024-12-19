@@ -101,7 +101,6 @@ public class RobotTwo {
   }
   private float proximityThreshold = 6.0f;
   public Boolean isCloseToRobotOne() {
-    System.out.println("r2: " + getLocation() + " pythag: " +  pythagoras(getLocation(), robotOneLocation.get()));
     return pythagoras(getLocation(), robotOneLocation.get()) < proximityThreshold;
   }
 
