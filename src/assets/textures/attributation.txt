@@ -1,1 +1,25 @@
-asphalt1.jpg https://opengameart.org/node/7651
+https://opengameart.org/node/7651 (royalty free)
+	asphalt1.jpg 
+	alexander_diffuse.jpg
+	alexander_specular.jpg
+	floor.jpg
+	floor.pdn
+	window.png
+
+Andrew Stutesman - https://unsplash.com/photos/blue-green-and-yellow-world-map-l68Z6eF2peA (royalty free)
+	globe.png
+	globe_specular.png
+
+Annie Spratt - https://unsplash.com/photos/brown-wooden-board-L6GydBHMVGQ (royalty free)
+	wood
+	wood_specular
+
+
+me
+	arrow.png
+	repeating_small.jpg
+	
+
+the labs
+	
+	

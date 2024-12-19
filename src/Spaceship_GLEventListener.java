@@ -128,14 +128,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
     createRandomNumbers();
 
     textures = new TextureLibrary();
-    textures.add(gl, "chequerboard", "assets/textures/chequerboard.jpg");
-    textures.add(gl, "jade_diffuse", "assets/textures/jade.jpg");
-    textures.add(gl, "jade_specular", "assets/textures/jade_specular.jpg");
     textures.add(gl, "container_diffuse", "assets/textures/container2.jpg");
     textures.add(gl, "container_specular", "assets/textures/container2_specular.jpg");
-    textures.add(gl, "watt_diffuse", "assets/textures/wattBook.jpg");
-    textures.add(gl, "watt_specular", "assets/textures/wattBook_specular.jpg");
-    textures.add(gl, "watt", "assets/textures/wattBook.jpg");
     textures.add(gl, "window", "assets/textures/window.png");
     textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
@@ -144,6 +138,10 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "alexander_diffuse", "assets/textures/alexander_diffuse.jpg");
     textures.add(gl, "alexander_specular", "assets/textures/alexander_specular.jpg");
     textures.addRepeating(gl, "repeating_small", "assets/textures/repeating_small.jpg");
+    textures.add(gl, "globe", "assets/textures/globe.png");
+    textures.add(gl, "globe_specular", "assets/textures/globe_specular.png");
+    textures.add(gl, "wood", "assets/textures/wood.jpg");
+    textures.add(gl, "wood_specular", "assets/textures/wood.jpg");
 
     shapes = new Shapes(camera, lights);
 
