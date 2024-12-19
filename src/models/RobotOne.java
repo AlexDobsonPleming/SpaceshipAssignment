@@ -171,7 +171,7 @@ public class RobotOne {
   private double timePaused = 0;
   private double timeSpentNotDancing = 0;
   private boolean shouldDance() {
-    return alwaysDancing || false; //dancing.get()
+    return alwaysDancing || dancing.get();
   }
   public void render(GL3 gl, double elapsedTime) {
     if (shouldDance() != wasDancing) {
