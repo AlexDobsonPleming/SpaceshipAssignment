@@ -10,6 +10,8 @@ import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
 import tooling.scenegraph.TransformNode;
 
+import java.util.function.Supplier;
+
 /**
  * This class stores the models.Robot
  *
@@ -41,8 +43,9 @@ public class RobotTwo {
   private double totalPathTime = 0;
 
   public RobotTwo(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
-
     shapes = shapeFactory;
+
+
 
     root = new NameNode("robot two structure");
 
@@ -86,6 +89,26 @@ public class RobotTwo {
               translateToRightEye.addChild(rightEye);
 
       root.update();
+  }
+
+  public Vec2 getLocation() {
+    return new Vec2(rotateSpotlight.getPosition().x, rotateSpotlight.getPosition().z);
+  }
+
+  private Supplier<Vec2> robotOneLocation;
+  public void setRobotOneLocationSupplier(Supplier<Vec2> robotOneLocation) {
+    this.robotOneLocation = robotOneLocation;
+  }
+  private float proximityThreshold = 6.0f;
+  public Boolean isCloseToRobotOne() {
+    System.out.println("r2: " + getLocation() + " pythag: " +  pythagoras(getLocation(), robotOneLocation.get()));
+    return pythagoras(getLocation(), robotOneLocation.get()) < proximityThreshold;
+  }
+
+  public static float pythagoras(Vec2 v1, Vec2 v2) {
+    float dx = v2.x - v1.x;
+    float dy = v2.y - v1.y;
+    return (float) Math.sqrt(dx * dx + dy * dy);
   }
 
   private Mat4 translateXZ(Vec2 point) {

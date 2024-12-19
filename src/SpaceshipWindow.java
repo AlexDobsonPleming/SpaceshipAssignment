@@ -8,7 +8,6 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import tooling.Camera;
 import tooling.ILight;
-import tooling.Light;
 
 /**
  * This class runs the main window
@@ -32,6 +31,8 @@ public class SpaceshipWindow extends JFrame {
   private final Spaceship_GLEventListener glEventListener;
   private final FPSAnimator animator; 
   private Camera camera;
+
+  JCheckBox alwaysDancing;
 
   public static void main(String[] args) {
     SpaceshipWindow window = new SpaceshipWindow("COM3504 Spaceship Assignment - Alexander Dobson-Pleming");
@@ -65,8 +66,8 @@ public class SpaceshipWindow extends JFrame {
     camera = new Camera(Camera.DEFAULT_POSITION, Camera.DEFAULT_TARGET, Camera.DEFAULT_UP);
     glEventListener = new Spaceship_GLEventListener(camera);
     canvas.addGLEventListener(glEventListener);
-    canvas.addMouseMotionListener(new MyMouseInput(camera));
-    canvas.addKeyListener(new MyKeyboardInput(camera));
+    canvas.addMouseMotionListener(new MouseControls(camera));
+    canvas.addKeyListener(new KeyboardControls(camera));
     getContentPane().add(canvas, BorderLayout.CENTER);
     
     JMenuBar menuBar=new JMenuBar();
@@ -121,6 +122,13 @@ public class SpaceshipWindow extends JFrame {
     });
     bottomPanel.add(lightControlPanel);
 
+    JLabel alwaysDancingLabel = new JLabel("force dance:");
+    alwaysDancing = new JCheckBox();
+
+    alwaysDancing.addActionListener(this::alwaysDance_change);
+    bottomPanel.add(alwaysDancingLabel);
+    bottomPanel.add(alwaysDancing);
+    glEventListener.addPostInitRunner(() -> {alwaysDancing.setSelected(glEventListener.isAlwaysDancing());});
 
     this.add(bottomPanel, BorderLayout.SOUTH);
     
@@ -153,7 +161,7 @@ public class SpaceshipWindow extends JFrame {
     canvas.requestFocusInWindow();
   }
   public void alwaysDance_change(ActionEvent e) {
-    glEventListener.startAnimation();
+    glEventListener.setAlwaysDancing(alwaysDancing.isSelected());
 //    glEventListener.stopAnimation();
   }
   public void quit_click(ActionEvent e) {
@@ -164,10 +172,10 @@ public class SpaceshipWindow extends JFrame {
 
 //this is from the lab code
  
-class MyKeyboardInput extends KeyAdapter  {
+class KeyboardControls extends KeyAdapter  {
   private Camera camera;
   
-  public MyKeyboardInput(Camera camera) {
+  public KeyboardControls(Camera camera) {
     this.camera = camera;
   }
   
@@ -186,11 +194,11 @@ class MyKeyboardInput extends KeyAdapter  {
 }
 
 //lab code
-class MyMouseInput extends MouseMotionAdapter {
+class MouseControls extends MouseMotionAdapter {
   private Point lastpoint;
   private Camera camera;
   
-  public MyMouseInput(Camera camera) {
+  public MouseControls(Camera camera) {
     this.camera = camera;
   }
 

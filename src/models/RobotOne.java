@@ -3,8 +3,11 @@ package models;
 import com.jogamp.opengl.GL3;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
+import gmaths.Vec2;
 import tooling.*;
 import tooling.scenegraph.*;
+
+import java.util.function.Supplier;
 
 /**
  * This class encapsulates the dancing robot
@@ -18,13 +21,15 @@ public class RobotOne {
 
   private TextureLibrary textures;
 
+  private Supplier<Boolean> dancing = () -> true;
+  private boolean alwaysDancing = false;
+
   private Shapes shapes;
   private Model sphere;
   private Model cube;
   private SGNode root;
 
-  private TransformNode translateX, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
-  private float xPosition = 0;
+  private TransformNode rootTranslate, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
   private float rotateLowerLegAngleStart = 10, rotateLowerLegAngle = rotateLowerLegAngleStart;
   private float rotateUpperLegAngleStart = -60, rotateUpperLegAngle = rotateUpperLegAngleStart;
   private float rotateBodyAngleStart = 30, rotateBodyAngle = rotateBodyAngleStart;
@@ -65,7 +70,7 @@ public class RobotOne {
 
 
     // The next few are global variables so they can be updated in other methods
-    translateX = new TransformNode("translate("+xPosition+",0,0)", Mat4Transform.translate(xPosition,0,0));
+    rootTranslate = new TransformNode("translate root", Mat4Transform.translate(-2,0,-7));
     rotateLowerLeg = new TransformNode("rotateAroundZ("+ rotateLowerLegAngle +")", Mat4Transform.rotateAroundZ(rotateLowerLegAngle));
     rotateUpperLeg = new TransformNode("rotateAroundZ("+ rotateUpperLegAngle +")",Mat4Transform.rotateAroundZ(rotateUpperLegAngle));
     rotateBody = new TransformNode("rotateAroundZ("+ rotateBodyAngle +")",Mat4Transform.rotateAroundZ(rotateBodyAngle));
@@ -73,8 +78,8 @@ public class RobotOne {
     waveRight = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(0));
 
 
-    root.addChild(translateX);
-      translateX.addChild(base);
+    root.addChild(rootTranslate);
+      rootTranslate.addChild(base);
         base.addChild(translateAboveBase);
           translateAboveBase.addChild(rotateLowerLeg);
             rotateLowerLeg.addChild(lowerLeg);
@@ -101,7 +106,24 @@ public class RobotOne {
 
   }
 
-  public void render(GL3 gl) {
+  public Vec2 getLocation() {
+    return new Vec2(rotateLowerLeg.getPosition().x, rotateLowerLeg.getPosition().z);
+  }
+  public void setDancingSupplier(Supplier<Boolean> dancingSupplier) {
+    dancing = dancingSupplier;
+  }
+
+  public boolean isAlwaysDancing() {
+    return alwaysDancing;
+  }
+  public void setAlwaysDancing(boolean alwaysDancing) {
+    this.alwaysDancing = alwaysDancing;
+  }
+
+  public void render(GL3 gl, double elapsedTime) {
+    if (alwaysDancing || dancing.get()) {
+      updateAnimation(elapsedTime);
+    }
     root.draw(gl);
   }
 

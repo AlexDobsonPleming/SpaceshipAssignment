@@ -156,6 +156,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
     robotOne = new RobotOne(gl, shapes, textures);
 
     robotTwo = new RobotTwo(gl, shapes, textures);
+    robotTwo.setRobotOneLocationSupplier(robotOne::getLocation);
+    robotOne.setDancingSupplier(robotTwo::isCloseToRobotOne);
 
     lights[0] = new PointLight(gl, this::getPointLightPosition);
     lights[0].setCamera(camera);
@@ -187,9 +189,16 @@ public class Spaceship_GLEventListener implements GLEventListener {
     if (animation) {
       robotOne.updateAnimation(elapsedTime);
     }
-    robotOne.render(gl);
+    robotOne.render(gl, elapsedTime);
     robotTwo.render(gl, elapsedTime);
     globe.render(gl, elapsedTime);
+  }
+
+  public boolean isAlwaysDancing() {
+    return robotOne.isAlwaysDancing();
+  }
+  public void setAlwaysDancing(boolean alwaysDancing) {
+    this.robotOne.setAlwaysDancing(alwaysDancing);
   }
 
   public ILight[] getLights() {return lights;}
