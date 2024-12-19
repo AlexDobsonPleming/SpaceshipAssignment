@@ -25,7 +25,7 @@ public class RobotOne {
   private boolean alwaysDancing = false;
 
   private Shapes shapes;
-  private Model sphere;
+  private Model sphere, headSphere, ringSphere, auto_body, handleShape, auto_default, auto_base;
   private Model cube;
   private SGNode root;
 
@@ -42,18 +42,37 @@ public class RobotOne {
 
     root = new NameNode("two-branch structure");
 
-
-
     sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
     cube = shapes.makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
 
-    Branch base = new Branch(cube, 3f, 0.1f, 3f);
-    Branch lowerLeg = new Branch(sphere, 0.5f,2.0f,0.5f);
-    Branch upperLeg = new Branch(sphere, 0.5f,2f,0.5f);
-    Branch body = new Branch(sphere, 1f,3.1f, 1.4f);
-    Branch leftArm = new Branch(sphere, 0.3f, 1f, 0.3f);
-    Branch rightArm = new Branch(sphere, 0.3f, 1f, 0.3f);
-    Branch head = new Branch(cube, 1f, 1f, 1f);
+    auto_default = shapes.makeSphere(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
+
+    auto_base = shapes.makeCube(gl, textures.get("auto_base"), textures.get("auto_body_specular"));
+    Branch base = new Branch(auto_base, 3f, 0.1f, 3f);
+
+    Branch lowerLeg = new Branch(auto_default, 0.5f,2.0f,0.5f);
+    Branch upperLeg = new Branch(auto_default, 0.5f,2f,0.5f);
+
+    auto_body = shapes.makeSphere(gl, textures.get("auto_body"), textures.get("auto_body_specular"));
+    Branch body = new Branch(auto_body, 1f,3.1f, 1.4f);
+    Branch leftArm = new Branch(auto_default, 0.3f, 1f, 0.3f);
+    Branch rightArm = new Branch(auto_default, 0.3f, 1f, 0.3f);
+
+    headSphere = shapes.makeSphere(gl, textures.get("auto_face"), textures.get("auto_face"));
+    ringSphere = shapes.makeSphere(gl, textures.get("auto_ring"), textures.get("auto_ring"));
+    Branch neck = new Branch(auto_default, 0.2f, 2, 0.2f);
+    Branch head = new Branch(headSphere, 1.5f, 1.5f, 0.1f);
+    Branch ring = new Branch(ringSphere, head.scaleX * 2, head.scaleY * 2, 0.5f);
+
+    handleShape = shapes.makeSphere(gl, textures.get("handle"), textures.get("jade_specular"));
+    float handleX = 0.2f;
+    float handleY = 0.8f;
+    float handleZ = 0.2f;
+    Branch handle1 = new Branch(handleShape, handleX, handleY, handleZ);
+    Branch handle2 = new Branch(handleShape, handleX, handleY, handleZ);
+    Branch handle3 = new Branch(handleShape, handleX, handleY, handleZ);
+    Branch handle4 = new Branch(handleShape, handleX, handleY, handleZ);
+    Branch handle5 = new Branch(handleShape, handleX, handleY, handleZ);
 
     TransformNode translateAboveBase = new TransformNode("translate above base", Mat4Transform.translate(0, base.scaleY, 0));
     TransformNode translateToTopOfLowerLeg = new TransformNode("translate(0,"+ lowerLeg.scaleY +",0)",Mat4Transform.translate(0,lowerLeg.scaleY,0));
@@ -67,6 +86,19 @@ public class RobotOne {
     TransformNode initialRotationRightArmPosition = new TransformNode("initial rotation right arm", Mat4Transform.rotateAroundZ(-90));
 
     TransformNode translateToHeadPosition = new TransformNode("transform to head pos", Mat4Transform.translate(0, body.scaleY, 0));
+    TransformNode spinHeadAround = new TransformNode("fix head rotation", Mat4Transform.rotateAroundY(180));
+    TransformNode translateToEndOfNeck = new TransformNode("translate to end of neck", Mat4Transform.translate(0, neck.scaleY - head.scaleY / 2, head.scaleZ * 1.4f));
+    TransformNode centreRing = new TransformNode("spin ring up", Mat4Transform.translate(0, -1 * head.scaleY / 2, 0));
+    TransformNode centreHandleTransforms = new TransformNode("centre handle transforms", Mat4Transform.translate(0, ring.scaleY / 2, 0));
+
+//    TransformNode translateToRingEdge = new TransformNode("transform to ring edge", Mat4Transform.translate(0, ring.scaleY * 0.8f,0));
+    Mat4 toRingEdge = Mat4Transform.translate(0, ring.scaleY * 0.5f,0);
+
+    TransformNode rotateToHandle1Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(45), toRingEdge));
+    TransformNode rotateToHandle2Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(115), toRingEdge));
+    TransformNode rotateToHandle3Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(180), toRingEdge));
+    TransformNode rotateToHandle4Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(245), toRingEdge));
+    TransformNode rotateToHandle5Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(315), toRingEdge));
 
 
     // The next few are global variables so they can be updated in other methods
@@ -98,11 +130,26 @@ public class RobotOne {
                               initialRotationRightArmPosition.addChild(waveRight);
                                 waveRight.addChild(rightArm);
                           body.addChild(translateToHeadPosition);
-                            translateToHeadPosition.addChild(head);
+                            translateToHeadPosition.addChild(neck);
+                              neck.addChild(translateToEndOfNeck);
+                                translateToEndOfNeck.addChild(spinHeadAround);
+                                  spinHeadAround.addChild(head);
+                                    head.addChild(centreRing);
+                                      centreRing.addChild(ring);
+                                        ring.addChild(centreHandleTransforms);
+                                          centreHandleTransforms.addChild(rotateToHandle1Pos);
+                                            rotateToHandle1Pos.addChild(handle1);
+                                          centreHandleTransforms.addChild(rotateToHandle2Pos);
+                                            rotateToHandle2Pos.addChild(handle2);
+                                          centreHandleTransforms.addChild(rotateToHandle3Pos);
+                                            rotateToHandle3Pos.addChild(handle3);
+                                          centreHandleTransforms.addChild(rotateToHandle4Pos);
+                                            rotateToHandle4Pos.addChild(handle4);
+                                          centreHandleTransforms.addChild(rotateToHandle5Pos);
+                                            rotateToHandle5Pos.addChild(handle5);
 
 
-
-      root.update();  // IMPORTANT – must be done every time any part of the scene graph changes
+      root.update();
 
   }
 
@@ -124,7 +171,7 @@ public class RobotOne {
   private double timePaused = 0;
   private double timeSpentNotDancing = 0;
   private boolean shouldDance() {
-    return alwaysDancing || dancing.get();
+    return alwaysDancing || false; //dancing.get()
   }
   public void render(GL3 gl, double elapsedTime) {
     if (shouldDance() != wasDancing) {

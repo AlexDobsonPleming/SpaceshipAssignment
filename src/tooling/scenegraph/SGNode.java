@@ -11,7 +11,7 @@ import com.jogamp.opengl.*;
  * @version   1.0 (15/10/2017)
  */
 
-public class SGNode {
+public class SGNode implements ISGNodeContainer{
 
   protected String name;
   protected ArrayList<SGNode> children;
@@ -25,6 +25,11 @@ public class SGNode {
 
   public void addChild(SGNode child) {
     children.add(child);
+  }
+
+  @Override
+  public SGNode getNode() {
+    return this;
   }
 
   public void addChild(ISGNodeContainer child) {

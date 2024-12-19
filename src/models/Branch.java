@@ -39,7 +39,7 @@ class Branch implements ISGNodeContainer {
         return node;
     }
 
-    public void addChild(SGNode child) {
+    public void addChild(ISGNodeContainer child) {
         node.addChild(child);
     }
 }

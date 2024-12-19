@@ -137,11 +137,18 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "floor", "assets/textures/floor.jpg");
     textures.add(gl, "alexander_diffuse", "assets/textures/alexander_diffuse.jpg");
     textures.add(gl, "alexander_specular", "assets/textures/alexander_specular.jpg");
-    textures.addRepeating(gl, "repeating_small", "assets/textures/repeating_small.jpg");
+    textures.addRepeating(gl, "repeating_small", "assets/textures/repeating_small.png");
     textures.add(gl, "globe", "assets/textures/globe.png");
     textures.add(gl, "globe_specular", "assets/textures/globe_specular.png");
     textures.add(gl, "wood", "assets/textures/wood.jpg");
     textures.add(gl, "wood_specular", "assets/textures/wood.jpg");
+    textures.add(gl, "auto_face", "assets/textures/autoFace.png");
+    textures.add(gl, "auto_ring", "assets/textures/auto_ring.png");
+    textures.add(gl, "handle", "assets/textures/handle.png");
+    textures.add(gl, "auto_default", "assets/textures/auto_default.png");
+    textures.add(gl, "auto_default_specular", "assets/textures/auto_default_specular.png");
+    textures.add(gl, "auto_body", "assets/textures/auto_body.png");
+    textures.add(gl, "auto_base", "assets/textures/auto_base.png");
 
     shapes = new Shapes(camera, lights);
 
