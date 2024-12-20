@@ -18,13 +18,23 @@ Annie Spratt - https://unsplash.com/photos/brown-wooden-board-L6GydBHMVGQ (royal
 me
 	arrow.png
 	repeating_small.jpg
-	
+	anything not mentioned and looks crudely hand drawn
 
-the labs
 
 vectorpocket - free to use license w/ attribution (below) - https://www.freepik.com/free-vector/illustration-red-flasher-flashing-beacon-with-siren-police-ambulance-cars_3264849.htm#fromView=search&page=1&position=8&uuid=c4f9745f-93a2-4c19-ada2-aed5c7788290
 Designed by vectorpocket/Freepik - http://www.freepik.com
 	bulb_housing.png
 
 	
-	
+https://github.com/nasa/NASA-3D-Resources
+"All of these resources are free to download and use."
+	ear0xuu2.jpg
+	jup0vss1.jpg
+	mar0kuu2.jpg
+	ven0aaa2.jpg
+
+https://www.solarsystemscope.com/textures/
+"You can use them in 3D rendering, or just open them in any image viewer and explore the surface of planets :)"
+	sun.jpg
+	earth_realistic.jpg
+	moon.jpg

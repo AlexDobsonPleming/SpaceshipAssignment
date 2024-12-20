@@ -76,6 +76,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     robotOne.dispose(gl);
     robotTwo.dispose(gl);
     globe.dispose(gl);
+    solarSystem.dispose(gl);
   }
   
 
@@ -97,6 +98,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
   private RobotOne robotOne;
   private RobotTwo robotTwo;
   private Globe globe;
+  private SolarSystem solarSystem;
   private List<Runnable> postInitialisationRunners = new ArrayList<Runnable>();
 
   // this is my code
@@ -113,6 +115,12 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.addRepeating(gl, "repeating_small", "assets/textures/repeating_small.png");
     textures.add(gl, "globe", "assets/textures/globe.png");
     textures.add(gl, "globe_specular", "assets/textures/globe_specular.png");
+    textures.add(gl, "jupiter", "assets/textures/jup0vss1.jpg");
+    textures.add(gl, "jupiter_specular","assets/textures/jup0vss1_specular.jpg");
+    textures.add(gl, "earth", "assets/textures/earth.jpg");
+    textures.add(gl, "earth_specular", "assets/textures/earth_specular.png");
+    textures.add(gl, "moon", "assets/textures/moon.jpg");
+    textures.add(gl, "sun", "assets/textures/sun.jpg");
     textures.add(gl, "wood", "assets/textures/wood.jpg");
     textures.add(gl, "wood_specular", "assets/textures/wood.jpg");
     textures.add(gl, "auto_face", "assets/textures/autoFace.png");
@@ -148,6 +156,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     lights[1].setCamera(camera);
 
     globe = new Globe(gl, shapes, textures);
+    solarSystem = new SolarSystem(gl, shapes, textures);
 
     postInitialisationRunners.forEach(Runnable::run);
   }
@@ -167,6 +176,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     robotOne.render(gl, elapsedTime);
     robotTwo.render(gl, elapsedTime);
     globe.render(gl, elapsedTime);
+    solarSystem.render(gl, elapsedTime);
   }
 
   public boolean isAlwaysDancing() {
