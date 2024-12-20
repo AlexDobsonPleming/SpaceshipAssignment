@@ -22,7 +22,6 @@ public class Room {
   private Surface ceiling;
   private Surface rearWall;
   private Surface windowWall;
-  private Surface wallBehindWindowTest;
   private RepeatingSurface oppositeWall;
 
   private float floorToCeilingHeight = 10f;
@@ -59,12 +58,6 @@ public class Room {
     Mat4 windowWallTransform = Mat4.multiply(Mat4.multiply(windowWallRotate, windowWallRaise), windowWallPushBack);
     windowWall = new Surface(gl, floorDepth, floorToCeilingHeight, cameraIn, lights, window, windowWallTransform);
 
-    Texture watt = textures.get("bridge");
-    Mat4 wattWallRotate = Mat4.multiply(Mat4Transform.rotateAroundZ(270), Mat4Transform.rotateAroundY(90));
-    Mat4 wattWallRaise = Mat4Transform.translate(new Vec3(0, 0, -1 * floorToCeilingHeight / 2));
-    Mat4 wattWallPushBack = Mat4Transform.translate(new Vec3(0, -1 * floorWidth, 0));
-    Mat4 wattWallTransform = Mat4.multiply(Mat4.multiply(wattWallRotate, wattWallRaise), wattWallPushBack);
-    wallBehindWindowTest = new Surface(gl, floorDepth, floorToCeilingHeight, cameraIn, lights, watt, wattWallTransform);
 
     Texture repeating = textures.get("repeating_small");
     Mat4 oppositeWallRotate = Mat4.multiply(Mat4Transform.rotateAroundZ(90), Mat4Transform.rotateAroundY(90));
@@ -82,7 +75,6 @@ public class Room {
     rearWall.render(gl);
     windowWall.render(gl);
     oppositeWall.render(gl);
-    wallBehindWindowTest.render(gl);
   }
 
   public void dispose(GL3 gl) {
@@ -91,7 +83,6 @@ public class Room {
     rearWall.dispose(gl);
     windowWall.dispose(gl);
     oppositeWall.dispose(gl);
-    wallBehindWindowTest.dispose(gl);
   }
 
 }
