@@ -6,6 +6,7 @@ import gmaths.Mat4Transform;
 import gmaths.Vec2;
 import gmaths.Vec3;
 import tooling.Model;
+import tooling.PointLight;
 import tooling.SpotLight;
 import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
@@ -13,7 +14,7 @@ import tooling.scenegraph.TransformNode;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This class stores the models.Robot
@@ -77,13 +78,28 @@ public class RobotTwo {
     public double getDuration() {
       return cornerDuration;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null || getClass() != obj.getClass()) return false;
+      CornerTraversal trav = (CornerTraversal) obj;
+      return start.equals(trav.start) && finish.equals(trav.finish);
+    }
   }
 
-  private ITraversal[] newAnchorPoints = {
+  private ITraversal[] traversals = {
           new StraightTraversal(new Vec2(-6.25f, 13.5f), new Vec2(-6.25f, -11f)),
+          new CornerTraversal(new Vec2(-6.25f, -11f), new Vec2(-6.25f, -11f)),
+
           new StraightTraversal(new Vec2(-6.25f, -11f), new Vec2(6.25f, -11f)),
+          new CornerTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, -11f)),
+
           new StraightTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, 13.5f)),
-          new StraightTraversal(new Vec2(6.25f, 13.5f), new Vec2(-6.25f, 13.5f))
+          new CornerTraversal(new Vec2(6.25f, 13.5f), new Vec2(6.25f, 13.5f)),
+
+          new StraightTraversal(new Vec2(6.25f, 13.5f), new Vec2(-6.25f, 13.5f)),
+          new CornerTraversal(new Vec2(-6.25f, 13.5f),new Vec2(-6.25f, 13.5f)),
   };
   private double speed = 5.0;
 
@@ -120,15 +136,15 @@ public class RobotTwo {
 
 
 
-    translateRoot = new TransformNode("translate root", translateXZ(newAnchorPoints[0].getStart()));
+    translateRoot = new TransformNode("translate root", translateXZ(traversals[0].getStart()));
     rotationRoot = new TransformNode("rotation root", Mat4Transform.rotateAroundY(0));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
 
 
     root.addChild(translateRoot);
-      translateRoot.addChild(baseRotation);
-        baseRotation.addChild(rotationRoot);
-          rotationRoot.addChild(body);
+      translateRoot.addChild(rotationRoot);
+        rotationRoot.addChild(baseRotation);
+          baseRotation.addChild(body);
             body.addChild(translateAboveBody);
               translateAboveBody.addChild(antennae);
                 antennae.addChild(translateAboveAntennae);
@@ -195,29 +211,52 @@ public class RobotTwo {
   private int previousSegment = -1; // Track the last segment index
 
   public void updateRailwayPosition(double elapsedTime) {
-    double totalPathTime = Arrays.stream(newAnchorPoints).map(ITraversal::getDuration).mapToDouble(Double::doubleValue).sum();
+    double totalPathTime = Arrays.stream(traversals).map(ITraversal::getDuration).mapToDouble(Double::doubleValue).sum();
     double adjustedTime = elapsedTime % totalPathTime;
 
     double cumulativeDuration = 0;
 
-    for (int i = 0; i < newAnchorPoints.length; i++) {
-      if (adjustedTime < cumulativeDuration + newAnchorPoints[i].getDuration()) {
-        if (previousSegment != i) {
-          previousSegment = i;
-          rotationRoot.setTransform(Mat4Transform.rotateAroundY(-1 * 90 * i));
+    for (int i = 0; i < traversals.length; i++) {
+      if (adjustedTime < cumulativeDuration + traversals[i].getDuration()) {
+//        if (previousSegment != i) {
+//          previousSegment = i;
+//          rotationRoot.setTransform(Mat4Transform.rotateAroundY(-1 * 90 * i));
+//          return;
+//        }
+        ITraversal traversal = traversals[i];
+        double segmentProgress = (adjustedTime - cumulativeDuration) / traversal.getDuration();
+
+        if (traversal instanceof StraightTraversal) {
+          StraightTraversal straightTraversal = (StraightTraversal)traversal;
+          Vec2 progressBetweenCorners = linearInterpolate(straightTraversal.getStart(), straightTraversal.getFinish(), (float)segmentProgress);
+          translateRoot.setTransform(translateXZ(progressBetweenCorners));
+          return;
+        } else if (traversal instanceof CornerTraversal) {
+          CornerTraversal cornerTraversal = (CornerTraversal)traversal;
+
+          CornerTraversal[] corners = Arrays.stream(traversals)
+                  .filter(CornerTraversal.class::isInstance)
+                  .map(CornerTraversal.class::cast)
+                  .toArray(CornerTraversal[]::new);
+
+          int index = IntStream.range(0, corners.length)
+                          .filter(streamI -> corners[streamI].equals(cornerTraversal))
+                          .findFirst().orElse(-1);
+
+
+          float existingAngle = -1 * 90 * index;
+          float angle = -1 * 90 * (float)segmentProgress;
+          float sumAngle = existingAngle + angle;
+          rotationRoot.setTransform(Mat4Transform.rotateAroundY(sumAngle));
           return;
         }
-        double segmentProgress = (adjustedTime - cumulativeDuration) / newAnchorPoints[i].getDuration();
-        Vec2 start = newAnchorPoints[i].getStart();
-        Vec2 end = newAnchorPoints[i].getFinish();
-        Vec2 progressBetweenCorners = linearInterpolate(start, end, (float)segmentProgress);
-        translateRoot.setTransform(translateXZ(progressBetweenCorners));
-        return;
-      }
-      cumulativeDuration +=newAnchorPoints[i].getDuration();
-    }
 
+      }
+      cumulativeDuration += traversals[i].getDuration();
+    }
   }
+
+
 
   private Vec2 linearInterpolate(Vec2 start, Vec2 end, float t) {
     return new Vec2(

@@ -4,13 +4,22 @@ package gmaths;
  * A class for a 2D vector.
  * This includes two components: x and y. 
  *
- * @author    Dr Steve Maddock
+ * @author    Dr Steve Maddock & me
  * @version   1.0 (01/10/2017)
  */
  
 public final class Vec2 {
   public float x;
   public float y;
+
+  //MY CODE
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Vec2 vec = (Vec2) obj;
+    return x == vec.x && y == vec.y;
+  }
 
   /**
    * Constructor.
