@@ -26,7 +26,7 @@ import tooling.ILight;
  */
 
 //this is my code
-public class SpaceshipWindow extends JFrame {
+public class Spaceship extends JFrame {
   
   private static final int WIDTH = 1024;
   private static final int HEIGHT = 768;
@@ -39,13 +39,13 @@ public class SpaceshipWindow extends JFrame {
   JCheckBox alwaysDancing, robotTwoMoving;
 
   public static void main(String[] args) {
-    SpaceshipWindow window = new SpaceshipWindow("Please watch WALL-E - it's a beautiful film");
+    Spaceship window = new Spaceship("Please watch WALL-E - it's a beautiful film");
     window.getContentPane().setPreferredSize(dimension);
     window.pack();
     window.setVisible(true);
   }
 
-  public SpaceshipWindow(String textForTitleBar) {
+  public Spaceship(String textForTitleBar) {
     super(textForTitleBar);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

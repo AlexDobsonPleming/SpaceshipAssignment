@@ -105,7 +105,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "container_diffuse", "assets/textures/container2.jpg");
     textures.add(gl, "container_specular", "assets/textures/container2_specular.jpg");
     textures.add(gl, "window", "assets/textures/window.png");
-    textures.add(gl, "bridge", "assets/textures/bridge.jpg");
     textures.add(gl, "arrow", "assets/textures/arrow.png");
     textures.add(gl, "asphalt", "assets/textures/asphalt1.jpg");
     textures.add(gl, "floor", "assets/textures/floor.jpg");
