@@ -156,6 +156,7 @@ public class RobotOne {
                                               rotateToHandle5Pos.addChild(handle5);
 
 
+      updateAnimation(gl, 0);
       root.update();
 
   }
