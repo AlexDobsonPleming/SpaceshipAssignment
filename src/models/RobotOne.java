@@ -92,11 +92,11 @@ public class RobotOne {
 
     TransformNode translateToHeadPosition = new TransformNode("transform to head pos", Mat4Transform.translate(0, body.scaleY, 0));
     TransformNode spinHeadAround = new TransformNode("fix head rotation", Mat4Transform.rotateAroundY(180));
-    TransformNode translateToEndOfNeck = new TransformNode("translate to end of neck", Mat4Transform.translate(0, neck.scaleY - head.scaleY / 2, head.scaleZ * 1.4f));
+    TransformNode translateToEndOfNeck = new TransformNode("translate to end of neck", Mat4Transform.translate(0, neck.scaleY - head.scaleY / 2, head.scaleZ * 2f));
     TransformNode centreRing = new TransformNode("spin ring up", Mat4Transform.translate(0, -1 * head.scaleY / 2, 0));
     TransformNode centreHandleTransforms = new TransformNode("centre handle transforms", Mat4Transform.translate(0, ring.scaleY / 2, 0));
 
-//    TransformNode translateToRingEdge = new TransformNode("transform to ring edge", Mat4Transform.translate(0, ring.scaleY * 0.8f,0));
+
     Mat4 toRingEdge = Mat4Transform.translate(0, ring.scaleY * 0.5f,0);
 
     TransformNode rotateToHandle1Pos = new TransformNode("transform to handle pos", Mat4.multiply(Mat4Transform.rotateAroundZ(45), toRingEdge));
