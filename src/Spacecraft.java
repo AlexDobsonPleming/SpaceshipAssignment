@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.management.RuntimeMXBean;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
@@ -27,20 +26,20 @@ import tooling.ILight;
  */
 
 //this is my code
-public class Spaceship extends JFrame {
+public class Spacecraft extends JFrame {
   
   private static final int WIDTH = 1024;
   private static final int HEIGHT = 768;
   private static final Dimension dimension = new Dimension(WIDTH, HEIGHT);
   private GLCanvas canvas;
-  private final Spaceship_GLEventListener glEventListener;
+  private final Spacecraft_GLEventListener glEventListener;
   private final FPSAnimator animator; 
   private Camera camera;
 
   JCheckBox alwaysDancing, robotTwoMoving;
 
   public static void main(String[] args) {
-    Spaceship window = new Spaceship("Please watch WALL-E - it's a beautiful film");
+    Spacecraft window = new Spacecraft("Please watch WALL-E - it's a beautiful film");
     window.getContentPane().setPreferredSize(dimension);
     ImageIcon icon = new ImageIcon("assets/textures/icon.png");
     window.setIconImage(icon.getImage());
@@ -48,7 +47,7 @@ public class Spaceship extends JFrame {
     window.setVisible(true);
   }
 
-  public Spaceship(String textForTitleBar) {
+  public Spacecraft(String textForTitleBar) {
     super(textForTitleBar);
 
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,7 +71,7 @@ public class Spaceship extends JFrame {
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));
     canvas = new GLCanvas(glcapabilities);
     camera = new Camera(new Vec3(3.5f,7.9f,25), new Vec3(-2,2,0), Camera.DEFAULT_UP);
-    glEventListener = new Spaceship_GLEventListener(camera);
+    glEventListener = new Spacecraft_GLEventListener(camera);
     canvas.addGLEventListener(glEventListener);
     canvas.addMouseMotionListener(new MouseControls(camera));
     canvas.addKeyListener(new KeyboardControls(camera));
@@ -88,7 +87,7 @@ public class Spaceship extends JFrame {
         JMenuItem attributionsItem = new JMenuItem("Attributions");
         JMenuItem aboutItem = new JMenuItem("About");
         attributionsItem.addActionListener(this::attributions_click);
-        aboutItem.addActionListener(this::quit_click);
+        aboutItem.addActionListener(this::about_click);
         helpMenu.add(attributionsItem);
         helpMenu.add(aboutItem);
     menuBar.add(fileMenu);
@@ -166,6 +165,31 @@ public class Spaceship extends JFrame {
     });
     animator = new FPSAnimator(canvas, 60);
     animator.start();
+  }
+
+  private void about_click(ActionEvent actionEvent) {
+    JDialog dialog = new JDialog();
+    dialog.setTitle("About Alex's spaceship assignment");
+    dialog.setSize(500, 400);
+    dialog.setLocationRelativeTo(null);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+    JTextArea textArea = new JTextArea();
+    textArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(textArea);
+
+    textArea.append("This is my (Alex Dobson-Pleming's) assignment for the COM3504 Spaceship assignment\n"+
+            "I'm very proud of being able to work on this, I love programming\n" +
+            "Stylistically it's based off of characters from the film WALL-E\n" +
+            "Specifically the ship's autopilot (AUTO) and the cleaner droid (MO - whose cleaning walle's tracks in this render\n" +
+            "You can view a video of it here\n" +
+            "https://youtu.be/IkmzXQSl4Ro");
+
+    // Add the scroll pane to the dialog
+    dialog.add(scrollPane, BorderLayout.CENTER);
+
+    // Make the dialog visible
+    dialog.setVisible(true);
   }
 
   private void attributions_click(ActionEvent actionEvent) {

@@ -18,12 +18,12 @@ import java.util.List;
  * I declare that the sections marked as my code are my own work
  */
 
-public class Spaceship_GLEventListener implements GLEventListener {
+public class Spacecraft_GLEventListener implements GLEventListener {
   
   private static final boolean DISPLAY_SHADERS = false;
 
   //lab code
-  public Spaceship_GLEventListener(Camera camera) {
+  public Spacecraft_GLEventListener(Camera camera) {
     this.camera = camera;
 
     lights = new Light[2];
