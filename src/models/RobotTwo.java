@@ -41,7 +41,7 @@ public class RobotTwo {
   private Branch spotlightHousing;
   private Branch spotlightBulb;
 
-  private TransformNode translateRoot, rotationRoot, rotateSpotlight;
+  private TransformNode translateRoot, cornerTurning, rotationRoot, rotateSpotlight;
 
   private interface ITraversal {
     double getDuration();
@@ -89,10 +89,10 @@ public class RobotTwo {
   }
 
   private ITraversal[] traversals = {
-          new StraightTraversal(new Vec2(-6.25f, 13.5f), new Vec2(-6.25f, -11f)),
-          new CornerTraversal(new Vec2(-6.25f, -11f), new Vec2(-6.25f, -11f)),
+          new StraightTraversal(new Vec2(-6.25f, 13.5f), new Vec2(-6.25f, -9f)),
+          new CornerTraversal(new Vec2(-6.25f, -9f), new Vec2(-4.25f, -11f)),
 
-          new StraightTraversal(new Vec2(-6.25f, -11f), new Vec2(6.25f, -11f)),
+          new StraightTraversal(new Vec2(-4.25f, -11f), new Vec2(6.25f, -11f)),
           new CornerTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, -11f)),
 
           new StraightTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, 13.5f)),
@@ -137,25 +137,27 @@ public class RobotTwo {
 
 
     translateRoot = new TransformNode("translate root", translateXZ(traversals[0].getStart()));
+    cornerTurning = new TransformNode("corner turning", translateXZ(new Vec2(0, 0)));
     rotationRoot = new TransformNode("rotation root", Mat4Transform.rotateAroundY(0));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
 
 
     root.addChild(translateRoot);
-      translateRoot.addChild(rotationRoot);
-        rotationRoot.addChild(baseRotation);
-          baseRotation.addChild(body);
-            body.addChild(translateAboveBody);
-              translateAboveBody.addChild(antennae);
-                antennae.addChild(translateAboveAntennae);
-                  translateAboveAntennae.addChild(rotateSpotlight);
-                    rotateSpotlight.addChild(spotlightHousing);
-                      spotlightHousing.addChild(translateToBulbPosition);
-                        translateToBulbPosition.addChild(spotlightBulb);
-            body.addChild(translateToLeftEye);
-              translateToLeftEye.addChild(leftEye);
-            body.addChild(translateToRightEye);
-              translateToRightEye.addChild(rightEye);
+      translateRoot.addChild(cornerTurning);
+        cornerTurning.addChild(rotationRoot);
+          rotationRoot.addChild(baseRotation);
+            baseRotation.addChild(body);
+              body.addChild(translateAboveBody);
+                translateAboveBody.addChild(antennae);
+                  antennae.addChild(translateAboveAntennae);
+                    translateAboveAntennae.addChild(rotateSpotlight);
+                      rotateSpotlight.addChild(spotlightHousing);
+                        spotlightHousing.addChild(translateToBulbPosition);
+                          translateToBulbPosition.addChild(spotlightBulb);
+              body.addChild(translateToLeftEye);
+                translateToLeftEye.addChild(leftEye);
+              body.addChild(translateToRightEye);
+                translateToRightEye.addChild(rightEye);
 
       root.update();
   }
@@ -195,18 +197,6 @@ public class RobotTwo {
 
     root.update();
   }
-
-//  public void intialiaseTrackTime() {
-//    segmentDurations = new double[anchorPoints.length];
-//
-//    for (int i = 0; i < anchorPoints.length; i++) {
-//      Vec2 p1 = anchorPoints[i];
-//      Vec2 p2 = anchorPoints[(i + 1) % anchorPoints.length]; // Loop back to start
-//      double distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-//      segmentDurations[i] = distance / speed;
-//      totalPathTime += segmentDurations[i];
-//    }
-//  }
 
   private int previousSegment = -1; // Track the last segment index
 
@@ -248,6 +238,8 @@ public class RobotTwo {
           float angle = -1 * 90 * (float)segmentProgress;
           float sumAngle = existingAngle + angle;
           rotationRoot.setTransform(Mat4Transform.rotateAroundY(sumAngle));
+
+
           return;
         }
 
