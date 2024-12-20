@@ -1,17 +1,13 @@
 package tooling;
 
 import gmaths.*;
-import java.nio.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
-import com.jogamp.opengl.util.texture.awt.*;
-import com.jogamp.opengl.util.texture.spi.JPEGImage;
-import tooling.*;
 
 /**
  * This class encapuslates rendering a model
@@ -35,8 +31,8 @@ public class Model {
   private Material material;
   private Camera camera;
   private ILight[] lights;
-  private Texture diffuse;
   private Texture specular;
+  private Texture[] multipleDiffuse;
 
   //lab code
   public Model() {
@@ -52,6 +48,11 @@ public class Model {
   //lab code
   public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
                              Camera camera, Texture diffuse, Texture specular) {
+    this(name, mesh, modelMatrix, shader, material, lights, camera, new Texture[] {diffuse}, specular);
+  }
+
+  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
+               Camera camera, Texture[] multipleDiffuse, Texture specular) {
     this.name = name;
     this.mesh = mesh;
     this.modelMatrix = modelMatrix;
@@ -59,7 +60,7 @@ public class Model {
     this.material = material;
     this.lights = lights;
     this.camera = camera;
-    this.diffuse = diffuse;
+    this.multipleDiffuse = multipleDiffuse;
     this.specular = specular;
   }
 
@@ -69,11 +70,6 @@ public class Model {
     this(name, mesh, modelMatrix, shader, material, lights, camera, diffuse, null);
   }
 
-  //lab code
-  public Model(String name, Mesh mesh, Mat4 modelMatrix, Shader shader, Material material, ILight[] lights,
-                             Camera camera) {
-    this(name, mesh, modelMatrix, shader, material, lights, camera, null, null);
-  }
 
   //lab code
   public void setName(String s) {
@@ -110,10 +106,6 @@ public class Model {
     this.lights = lights;
   }
 
-  //lab code
-  public void setDiffuse(Texture t) {
-    this.diffuse = t;
-  }
 
   //lab code
   public void setSpecular(Texture t) {
@@ -186,19 +178,47 @@ public class Model {
     shader.setVec3(gl, "material.specular", material.getSpecular());
     shader.setFloat(gl, "material.shininess", material.getShininess());
 
-    if (diffuse!=null) {
-      shader.setInt(gl, "first_texture", 0);  // be careful to match these with GL_TEXTURE0 and GL_TEXTURE1
+    if (multipleDiffuse!=null) {
+      shader.setInt(gl, "first_texture", currentDiffuse);
       gl.glActiveTexture(GL.GL_TEXTURE0);
-      diffuse.bind(gl);
+      Texture tid = multipleDiffuse[0];
+      tid.bind(gl);
+      if (multipleDiffuse.length > 1) {
+        gl.glActiveTexture(GL.GL_TEXTURE1);
+        tid = multipleDiffuse[1];
+        tid.bind(gl);
+      }
+      if (multipleDiffuse.length > 2) {
+        gl.glActiveTexture(GL.GL_TEXTURE2);
+        tid = multipleDiffuse[2];
+        tid.bind(gl);
+      }
+
+
+//    else {
+//      if (diffuse!=null) {
+//        shader.setInt(gl, "first_texture", 0);  // be careful to match these with GL_TEXTURE0 and GL_TEXTURE1
+//        gl.glActiveTexture(GL.GL_TEXTURE0);
+//        diffuse.bind(gl);
+//      }
     }
     if (specular!=null) {
-      shader.setInt(gl, "second_texture", 1);
-      gl.glActiveTexture(GL.GL_TEXTURE1);
+      shader.setInt(gl, "second_texture", 3);
+      gl.glActiveTexture(GL.GL_TEXTURE3);
       specular.bind(gl);
     }
 
     mesh.render(gl);
   }
+
+  private int currentDiffuse = 0;
+
+  public void setDiffuseIndex(GL3 gl, int index) {
+    currentDiffuse = index;
+//    shader.use(gl);
+//    shader.setInt(gl, "first_texture", index);
+  }
+
 
   //lab code
   private boolean mesh_null() {

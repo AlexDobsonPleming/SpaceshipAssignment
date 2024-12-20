@@ -1,5 +1,7 @@
 package models;
 
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.util.texture.Texture;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import tooling.Model;
@@ -20,11 +22,13 @@ class Branch implements ISGNodeContainer {
     public float scaleX;
     public float scaleY;
     public float scaleZ;
+    private Model model;
 
     public Branch(Model model, float sx, float sy, float sz) {
         scaleX = sx;
         scaleY = sy;
         scaleZ = sz;
+        this.model = model;
 
         node = new NameNode("branch");
         Mat4 m = Mat4Transform.scale(scaleX, scaleY, scaleZ);
@@ -42,4 +46,9 @@ class Branch implements ISGNodeContainer {
     public void addChild(ISGNodeContainer child) {
         node.addChild(child);
     }
+
+    public void setDiffuseIndex(GL3 gl, int index) {
+        this.model.setDiffuseIndex(gl, index);
+    }
+
 }

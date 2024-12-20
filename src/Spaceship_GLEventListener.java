@@ -143,6 +143,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "wood", "assets/textures/wood.jpg");
     textures.add(gl, "wood_specular", "assets/textures/wood.jpg");
     textures.add(gl, "auto_face", "assets/textures/autoFace.png");
+    textures.add(gl, "auto_face_plant", "assets/textures/auto_face_plant.png");
+    textures.add(gl, "auto_face_plant_inverted", "assets/textures/auto_face_plant_inverted.png");
     textures.add(gl, "auto_ring", "assets/textures/auto_ring.png");
     textures.add(gl, "handle", "assets/textures/handle.png");
     textures.add(gl, "auto_default", "assets/textures/auto_default.png");
@@ -189,9 +191,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
     lights[0].render(gl);
     room.render(gl);
 
-    if (animation) {
-      robotOne.updateAnimation(elapsedTime);
-    }
     robotOne.render(gl, elapsedTime);
     robotTwo.render(gl, elapsedTime);
     globe.render(gl, elapsedTime);

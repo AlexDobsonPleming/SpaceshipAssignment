@@ -1,6 +1,7 @@
 package models;
 
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.util.texture.Texture;
 import gmaths.Mat4;
 import gmaths.Mat4Transform;
 import gmaths.Vec2;
@@ -28,6 +29,8 @@ public class RobotOne {
   private Model sphere, headSphere, ringSphere, auto_body, handleShape, auto_default, auto_base;
   private Model cube;
   private SGNode root;
+
+  private Branch head;
 
   private TransformNode rootTranslate, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight, headRock;
   private float rotateLowerLegAngleStart = 10, rotateLowerLegAngle = rotateLowerLegAngleStart;
@@ -60,10 +63,10 @@ public class RobotOne {
     Branch leftArm = new Branch(auto_default, 0.3f, 1f, 0.3f);
     Branch rightArm = new Branch(auto_default, 0.3f, 1f, 0.3f);
 
-    headSphere = shapes.makeSphere(gl, textures.get("auto_face"), textures.get("auto_face"));
+    headSphere = shapes.makeSphere(gl, new Texture[] {textures.get("auto_face"), textures.get("auto_face_plant"), textures.get("auto_face_plant_inverted")}, textures.get("auto_face"));
     ringSphere = shapes.makeSphere(gl, textures.get("auto_ring"), textures.get("auto_ring"));
     Branch neck = new Branch(auto_default, 0.2f, 2, 0.2f);
-    Branch head = new Branch(headSphere, 1.5f, 1.5f, 0.1f);
+    head = new Branch(headSphere, 1.5f, 1.5f, 0.1f);
     Branch ring = new Branch(ringSphere, head.scaleX * 2, head.scaleY * 2, 0.5f);
 
     handleShape = shapes.makeSphere(gl, textures.get("handle"), textures.get("jade_specular"));
@@ -182,6 +185,7 @@ public class RobotOne {
       if (wasDancing) {
         //stopped dancing
         timePaused = elapsedTime;
+        head.setDiffuseIndex(gl, 0);
       } else {
         //started dancing again
         timeSpentNotDancing += (elapsedTime - timePaused);
@@ -189,14 +193,14 @@ public class RobotOne {
       wasDancing = !wasDancing;
     }
     if (shouldDance()) {
-      updateAnimation(elapsedTime - timeSpentNotDancing);
+      updateAnimation(gl, elapsedTime - timeSpentNotDancing);
     }
     root.draw(gl);
   }
 
 
   // only does left arm
-  public void updateAnimation(double elapsedTime) {
+  public void updateAnimation(GL3 gl, double elapsedTime) {
     rotateLowerLegAngle = rotateLowerLegAngleStart *(float)Math.sin(elapsedTime);
     rotateLowerLeg.setTransform(Mat4Transform.rotateAroundZ(rotateLowerLegAngle));
 
@@ -214,6 +218,8 @@ public class RobotOne {
 
     headRockAngle = headRockAngleStart * (float) Math.sin(elapsedTime * 0.5f);
     headRock.setTransform(Mat4Transform.rotateAroundZ((headRockAngle)));
+
+    head.setDiffuseIndex(gl, (int)((elapsedTime * 2) % 2) + 1);
 
     root.update(); // IMPORTANT – the scene graph has changed
   }
