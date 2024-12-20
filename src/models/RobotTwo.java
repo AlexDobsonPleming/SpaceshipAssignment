@@ -6,7 +6,6 @@ import gmaths.Mat4Transform;
 import gmaths.Vec2;
 import gmaths.Vec3;
 import tooling.Model;
-import tooling.PointLight;
 import tooling.SpotLight;
 import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
@@ -185,8 +184,33 @@ public class RobotTwo {
     return Mat4Transform.translate(point.x, 0, point.y);
   }
 
+  private boolean moving = true;
+
+  public boolean isMoving() {
+    return moving;
+  }
+  public void setMoving(boolean moving) { this.moving = moving; }
+
+  private boolean wasMoving = moving;
+  private double timePaused = 0;
+  private double timeSpentNotMoving = 0;
+  private boolean shouldMove() {
+    return moving;
+  }
   public void render(GL3 gl, double elapsedTime) {
-    updateAnimation(elapsedTime);
+    if (shouldMove() != wasMoving) {
+      if (wasMoving) {
+        //stopped dancing
+        timePaused = elapsedTime;
+      } else {
+        //started dancing again
+        timeSpentNotMoving += (elapsedTime - timePaused);
+      }
+      wasMoving = !wasMoving;
+    }
+    if (shouldMove()) {
+      updateAnimation(elapsedTime - timeSpentNotMoving);
+    }
     root.draw(gl);
   }
 
@@ -208,11 +232,6 @@ public class RobotTwo {
 
     for (int i = 0; i < traversals.length; i++) {
       if (adjustedTime < cumulativeDuration + traversals[i].getDuration()) {
-//        if (previousSegment != i) {
-//          previousSegment = i;
-//          rotationRoot.setTransform(Mat4Transform.rotateAroundY(-1 * 90 * i));
-//          return;
-//        }
         ITraversal traversal = traversals[i];
         double segmentProgress = (adjustedTime - cumulativeDuration) / traversal.getDuration();
 

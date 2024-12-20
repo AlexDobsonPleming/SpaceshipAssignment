@@ -182,6 +182,13 @@ public class Spaceship_GLEventListener implements GLEventListener {
     this.robotOne.setAlwaysDancing(alwaysDancing);
   }
 
+  public boolean isMOMoving() {
+    return robotTwo.isMoving();
+  }
+  public void setMOMoving(boolean moving) {
+    this.robotTwo.setMoving(moving);
+  }
+
   public ILight[] getLights() {return lights;}
 
   // this is lab code

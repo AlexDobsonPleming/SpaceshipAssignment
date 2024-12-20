@@ -36,7 +36,7 @@ public class SpaceshipWindow extends JFrame {
   private final FPSAnimator animator; 
   private Camera camera;
 
-  JCheckBox alwaysDancing;
+  JCheckBox alwaysDancing, robotTwoMoving;
 
   public static void main(String[] args) {
     SpaceshipWindow window = new SpaceshipWindow("Please watch WALL-E - it's a beautiful film");
@@ -142,6 +142,14 @@ public class SpaceshipWindow extends JFrame {
     bottomPanel.add(alwaysDancing);
     glEventListener.addPostInitRunner(() -> {alwaysDancing.setSelected(glEventListener.isAlwaysDancing());});
 
+    JLabel robotTwoMovingLabel = new JLabel("robot 2:");
+    robotTwoMoving = new JCheckBox();
+
+    robotTwoMoving.addActionListener(this::robotTwoMoving_change);
+    bottomPanel.add(robotTwoMovingLabel);
+    bottomPanel.add(robotTwoMoving);
+    glEventListener.addPostInitRunner(() -> {robotTwoMoving.setSelected(glEventListener.isMOMoving());});
+
     this.add(bottomPanel, BorderLayout.SOUTH);
     
     addWindowListener(new WindowAdapter() {
@@ -203,7 +211,9 @@ public class SpaceshipWindow extends JFrame {
   }
   public void alwaysDance_change(ActionEvent e) {
     glEventListener.setAlwaysDancing(alwaysDancing.isSelected());
-//    glEventListener.stopAnimation();
+  }
+  private void robotTwoMoving_change(ActionEvent actionEvent) {
+    glEventListener.setMOMoving(robotTwoMoving.isSelected());
   }
   public void quit_click(ActionEvent e) {
     System.exit(0);
