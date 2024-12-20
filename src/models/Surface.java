@@ -24,22 +24,23 @@ public class Surface {
   private Model surface;
 
 
+  private static Material defaultMaterial = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
   public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, ILight[] lights, Texture texture1, Mat4 translateIn) {
+    this(gl, xSize, zSize, cameraIn, lights, texture1, null, translateIn, defaultMaterial);
+  }
+
+  public Surface(GL3 gl, float xSize, float zSize, Camera cameraIn, ILight[] lights, Texture texture1, Texture specular, Mat4 translateIn, Material material) {
     camera = cameraIn;
     this.lights = lights;
 
     String name = "floor";
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "assets/shaders/vs_standard.glsl", "assets/shaders/fs_standard_m_2t.glsl");
-    Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 scale = Mat4Transform.scale(xSize,1f,zSize);
     Mat4 modelMatrix = Mat4.multiply(translateIn, scale);
-    surface = new Model(name, mesh, modelMatrix, shader, material, lights, camera, texture1);
+    surface = new Model(name, mesh, modelMatrix, shader, material, lights, camera, texture1, specular);
   }
 
-  public void setSpecularMap(Texture texture2) {
-    surface.setSpecular(texture2);
-  }
 
   public void render(GL3 gl) {
     surface.render(gl);

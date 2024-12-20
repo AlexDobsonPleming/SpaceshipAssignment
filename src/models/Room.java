@@ -4,10 +4,7 @@ import gmaths.*;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.texture.*;
-import tooling.Camera;
-import tooling.ILight;
-import tooling.Light;
-import tooling.PointLight;
+import tooling.*;
 
 /**
  * This class encapsulates rendering the room
@@ -36,8 +33,7 @@ public class Room {
 
     Texture asphalt = textures.get("asphalt");
 
-    Texture rearWallDiffuse = textures.get("alexander_diffuse");
-    Texture rearwWallSpecular = textures.get("alexander_specular");
+
 
     Texture floorTexture = textures.get("floor");
     floor = new Surface(gl, floorWidth, floorDepth, cameraIn, lights, floorTexture, Mat4Transform.translate(new Vec3()));
@@ -49,12 +45,14 @@ public class Room {
 
     ceiling = new Surface(gl, floorWidth, floorDepth, cameraIn, lights, asphalt, ceilingTransform);
 
+    Texture rearWallDiffuse = textures.get("alexander_diffuse");
+    Texture rearWallSpecular = textures.get("alexander_specular");
     Mat4 rearWallRotate = Mat4Transform.rotateAroundX(90);
     Mat4 rearWallRaise = Mat4Transform.translate(new Vec3(0, 0, -1 * floorToCeilingHeight / 2));
     Mat4 rearWallPushBack = Mat4Transform.translate(new Vec3(0, -1 * floorDepth / 2, 0));
     Mat4 rearWallTransform = Mat4.multiply(Mat4.multiply(rearWallRotate, rearWallRaise), rearWallPushBack);
-    rearWall = new Surface(gl, floorWidth, floorToCeilingHeight, cameraIn, lights, rearWallDiffuse, rearWallTransform);
-    rearWall.setSpecularMap(rearwWallSpecular);
+    Material shinyMaterial = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
+    rearWall = new Surface(gl, floorWidth, floorToCeilingHeight, cameraIn, lights, rearWallDiffuse, rearWallSpecular, rearWallTransform, shinyMaterial);
 
     Texture window = textures.get("window");
     Mat4 windowWallRotate = Mat4.multiply(Mat4Transform.rotateAroundZ(270), Mat4Transform.rotateAroundY(90));
