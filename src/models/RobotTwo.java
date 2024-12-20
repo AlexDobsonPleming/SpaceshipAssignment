@@ -39,7 +39,7 @@ public class RobotTwo {
   private Branch spotlightHousing;
   private Branch spotlightBulb;
 
-  private TransformNode translateRoot, cornerTurning, rotationRoot, rotateSpotlight;
+  private TransformNode translateRoot, cornerTurning, rotationRoot, robotTilt, rotateSpotlight;
 
   private interface ITraversal {
     double getDuration();
@@ -132,30 +132,34 @@ public class RobotTwo {
     TransformNode translateAboveAntennae = new TransformNode("translate right eye",Mat4Transform.translate(0, antennae.scaleY,0));
     TransformNode translateToBulbPosition = new TransformNode("translate to bulb position", Mat4Transform.translate(0, spotlightHousing.scaleY / 5, spotlightHousing.scaleZ / 3));
 
+    TransformNode tiltOffset = new TransformNode("anti clip offset", Mat4Transform.translate(new Vec3(-1 * body.scaleX / 2, 0, 0)));
 
 
     translateRoot = new TransformNode("translate root", translateXZ(traversals[0].getStart()));
     cornerTurning = new TransformNode("corner turning", translateXZ(new Vec2(0, 0)));
     rotationRoot = new TransformNode("rotation root", Mat4Transform.rotateAroundY(0));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
+    robotTilt = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundX(0));
 
 
     root.addChild(translateRoot);
       translateRoot.addChild(rotationRoot);
         rotationRoot.addChild(cornerTurning);
-          cornerTurning.addChild(baseRotation);
-            baseRotation.addChild(body);
-              body.addChild(translateAboveBody);
-                translateAboveBody.addChild(antennae);
-                  antennae.addChild(translateAboveAntennae);
-                    translateAboveAntennae.addChild(rotateSpotlight);
-                      rotateSpotlight.addChild(spotlightHousing);
-                        spotlightHousing.addChild(translateToBulbPosition);
-                          translateToBulbPosition.addChild(spotlightBulb);
-              body.addChild(translateToLeftEye);
-                translateToLeftEye.addChild(leftEye);
-              body.addChild(translateToRightEye);
-                translateToRightEye.addChild(rightEye);
+          cornerTurning.addChild(robotTilt);
+            robotTilt.addChild(tiltOffset);
+              tiltOffset.addChild(baseRotation);
+              baseRotation.addChild(body);
+                body.addChild(translateAboveBody);
+                  translateAboveBody.addChild(antennae);
+                    antennae.addChild(translateAboveAntennae);
+                      translateAboveAntennae.addChild(rotateSpotlight);
+                        rotateSpotlight.addChild(spotlightHousing);
+                          spotlightHousing.addChild(translateToBulbPosition);
+                            translateToBulbPosition.addChild(spotlightBulb);
+                body.addChild(translateToLeftEye);
+                  translateToLeftEye.addChild(leftEye);
+                body.addChild(translateToRightEye);
+                  translateToRightEye.addChild(rightEye);
 
       root.update();
   }
@@ -262,6 +266,9 @@ public class RobotTwo {
 
           Mat4 trackCorner = Mat4Transform.translate(-2, 0, 0);
           cornerTurning.setTransform(trackCorner);
+
+          float tiltAngle = -30 * (float)Math.sin(Math.toRadians(180) * segmentProgress);
+          robotTilt.setTransform(Mat4Transform.rotateAroundZ(tiltAngle));
 
           return;
         }
