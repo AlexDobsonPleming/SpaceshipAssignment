@@ -76,7 +76,7 @@ public class Room {
   // this is lab code
   // The light's position is continually being changed, so needs to be calculated for each frame.
   private Vec3 getPointLightPosition() {
-    return new Vec3(0,floorToCeilingHeight * 0.8f,0);
+    return new Vec3(0,floorToCeilingHeight * 0.95f,0);
     //return new Vec3(5f,3.4f,5f);
   }
 
@@ -95,6 +95,7 @@ public class Room {
     rearWall.dispose(gl);
     windowWall.dispose(gl);
     oppositeWall.dispose(gl);
+    roomLight.dispose(gl);
   }
 
     public PointLight getRoomLight() {

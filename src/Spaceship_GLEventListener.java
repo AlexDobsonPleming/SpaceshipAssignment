@@ -72,9 +72,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
   ///my code
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
-    for (ILight light : lights) {
-      light.dispose(gl);
-    }
     room.dispose(gl);
     robotOne.dispose(gl);
     robotTwo.dispose(gl);

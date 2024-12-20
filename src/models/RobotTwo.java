@@ -27,7 +27,6 @@ public class RobotTwo {
   private TextureLibrary textures;
 
   private Shapes shapes;
-  private Model sphere;
   private Model body_cube, eyeCube, antennae_cube, spotlight_housing_cube, bulb;
   private SGNode root;
 
@@ -71,9 +70,11 @@ public class RobotTwo {
     public Vec2 getStart() { return start; }
     public Vec2 getFinish() { return finish; }
 
-//    private Vec2 centreOfCorner() {
-//      return new Vec2(Math.min(start.x, finish.x))
-//    }
+    private Vec2 centreOfCorner() {
+      float closestX = Math.abs(start.x) <= Math.abs(finish.x) ? start.x : finish.x;
+      float closestY = Math.abs(start.y) <= Math.abs(finish.y) ? start.y : finish.y;
+      return new Vec2(closestX, closestY);
+    }
     public double getDuration() {
       return cornerDuration;
     }
@@ -88,17 +89,17 @@ public class RobotTwo {
   }
 
   private ITraversal[] traversals = {
-          new StraightTraversal(new Vec2(-6.25f, 13.5f), new Vec2(-6.25f, -9f)),
+          new StraightTraversal(new Vec2(-6.25f, 11.5f), new Vec2(-6.25f, -9f)),
           new CornerTraversal(new Vec2(-6.25f, -9f), new Vec2(-4.25f, -11f)),
 
-          new StraightTraversal(new Vec2(-4.25f, -11f), new Vec2(6.25f, -11f)),
-          new CornerTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, -11f)),
+          new StraightTraversal(new Vec2(-4.25f, -11f), new Vec2(4.25f, -11f)),
+          new CornerTraversal(new Vec2(4.25f, -11f), new Vec2(6.25f, -9f)),
 
-          new StraightTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, 13.5f)),
-          new CornerTraversal(new Vec2(6.25f, 13.5f), new Vec2(6.25f, 13.5f)),
+          new StraightTraversal(new Vec2(6.25f, -9f), new Vec2(6.25f, 11.5f)),
+          new CornerTraversal(new Vec2(6.25f, 11.5f), new Vec2(4.25f, 13.5f)),
 
-          new StraightTraversal(new Vec2(6.25f, 13.5f), new Vec2(-6.25f, 13.5f)),
-          new CornerTraversal(new Vec2(-6.25f, 13.5f),new Vec2(-6.25f, 13.5f)),
+          new StraightTraversal(new Vec2(4.25f, 13.5f), new Vec2(-4.25f, 13.5f)),
+          new CornerTraversal(new Vec2(-4.25f, 13.5f),new Vec2(-6.25f, 11.5f)),
   };
   private double speed = 5.0;
 
@@ -108,8 +109,6 @@ public class RobotTwo {
     spotLight = new SpotLight(gl, this::getSpotlightPosition, this::getSpotlightDirection);
 
     root = new NameNode("robot two structure");
-
-    sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
 
     body_cube = shapes.makeCube(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
     Branch body = new Branch(body_cube, 1f,1.5f, 1f);
@@ -142,9 +141,9 @@ public class RobotTwo {
 
 
     root.addChild(translateRoot);
-      translateRoot.addChild(cornerTurning);
-        cornerTurning.addChild(rotationRoot);
-          rotationRoot.addChild(baseRotation);
+      translateRoot.addChild(rotationRoot);
+        rotationRoot.addChild(cornerTurning);
+          cornerTurning.addChild(baseRotation);
             baseRotation.addChild(body);
               body.addChild(translateAboveBody);
                 translateAboveBody.addChild(antennae);
@@ -239,9 +238,10 @@ public class RobotTwo {
           StraightTraversal straightTraversal = (StraightTraversal)traversal;
           Vec2 progressBetweenCorners = linearInterpolate(straightTraversal.getStart(), straightTraversal.getFinish(), (float)segmentProgress);
           translateRoot.setTransform(translateXZ(progressBetweenCorners));
+          cornerTurning.setTransform(Mat4Transform.translate(new Vec3(0,0,0)));
           return;
         } else if (traversal instanceof CornerTraversal) {
-          CornerTraversal cornerTraversal = (CornerTraversal)traversal;
+          CornerTraversal corner = (CornerTraversal)traversal;
 
           CornerTraversal[] corners = Arrays.stream(traversals)
                   .filter(CornerTraversal.class::isInstance)
@@ -249,7 +249,7 @@ public class RobotTwo {
                   .toArray(CornerTraversal[]::new);
 
           int index = IntStream.range(0, corners.length)
-                          .filter(streamI -> corners[streamI].equals(cornerTraversal))
+                          .filter(streamI -> corners[streamI].equals(corner))
                           .findFirst().orElse(-1);
 
 
@@ -258,6 +258,10 @@ public class RobotTwo {
           float sumAngle = existingAngle + angle;
           rotationRoot.setTransform(Mat4Transform.rotateAroundY(sumAngle));
 
+          translateRoot.setTransform((translateXZ(corner.centreOfCorner())));
+
+          Mat4 trackCorner = Mat4Transform.translate(-2, 0, 0);
+          cornerTurning.setTransform(trackCorner);
 
           return;
         }
@@ -285,6 +289,11 @@ public class RobotTwo {
   }
 
   public void dispose(GL3 gl) {
-    sphere.dispose(gl);
+    body_cube.dispose(gl);
+    eyeCube.dispose(gl);
+    eyeCube.dispose(gl);
+    antennae_cube.dispose(gl);
+    spotlight_housing_cube.dispose(gl);
+    bulb.dispose(gl);
   }
 }
