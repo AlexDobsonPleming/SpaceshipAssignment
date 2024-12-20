@@ -67,7 +67,7 @@ public class SpaceshipWindow extends JFrame {
     //this is lab code
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));
     canvas = new GLCanvas(glcapabilities);
-    camera = new Camera(Camera.DEFAULT_POSITION, Camera.DEFAULT_TARGET, Camera.DEFAULT_UP);
+    camera = new Camera(new Vec3(3.5f,7.9f,25), new Vec3(-2,2,0), Camera.DEFAULT_UP);
     glEventListener = new Spaceship_GLEventListener(camera);
     canvas.addGLEventListener(glEventListener);
     canvas.addMouseMotionListener(new MouseControls(camera));
@@ -96,7 +96,7 @@ public class SpaceshipWindow extends JFrame {
     JLabel label = new JLabel("Camera", JLabel.LEFT);
     bottomPanel.add(label);
 
-    JButton cameraToX = new JButton("Default");
+    JButton cameraToX = new JButton("X");
     cameraToX.addActionListener(this::cameraX_click);
     bottomPanel.add(cameraToX);
 
