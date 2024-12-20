@@ -69,13 +69,12 @@ public class Spaceship_GLEventListener implements GLEventListener {
   }
 
   /* Clean up memory, if necessary */
-  //lab code
+  ///my code
   public void dispose(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
     for (ILight light : lights) {
       light.dispose(gl);
     }
-    //my code
     room.dispose(gl);
     robotOne.dispose(gl);
     robotTwo.dispose(gl);
@@ -83,25 +82,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
   }
   
 
-  // ***************************************************
-  /* INTERACTION
-   *
-   *
-   */
-  //lab code
-  private boolean animation = false;
-  private double savedTime = 0;
-   
-  public void startAnimation() {
-    animation = true;
-    startTime = getSeconds()-savedTime;
-  }
-   
-  public void stopAnimation() {
-    animation = false;
-    double elapsedTime = getSeconds()-startTime;
-    savedTime = elapsedTime;
-  }
 
   // ***************************************************
   /* THE SCENE
