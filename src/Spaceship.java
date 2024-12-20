@@ -42,6 +42,8 @@ public class Spaceship extends JFrame {
   public static void main(String[] args) {
     Spaceship window = new Spaceship("Please watch WALL-E - it's a beautiful film");
     window.getContentPane().setPreferredSize(dimension);
+    ImageIcon icon = new ImageIcon("assets/textures/icon.png");
+    window.setIconImage(icon.getImage());
     window.pack();
     window.setVisible(true);
   }
@@ -64,6 +66,7 @@ public class Spaceship extends JFrame {
     } else {
       System.out.println("Only one monitor detected.");
     }
+
 
     //this is lab code
     GLCapabilities glcapabilities = new GLCapabilities(GLProfile.get(GLProfile.GL3));

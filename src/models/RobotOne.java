@@ -157,6 +157,7 @@ public class RobotOne {
 
 
       updateAnimation(gl, 0);
+      head.setDiffuseIndex(gl, 0);
       root.update();
 
   }
