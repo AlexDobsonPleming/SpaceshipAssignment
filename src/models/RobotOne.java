@@ -29,12 +29,14 @@ public class RobotOne {
   private Model cube;
   private SGNode root;
 
-  private TransformNode rootTranslate, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight;
+  private TransformNode rootTranslate, rotateLowerLeg, rotateUpperLeg, rotateBody, waveLeft, waveRight, headRock;
   private float rotateLowerLegAngleStart = 10, rotateLowerLegAngle = rotateLowerLegAngleStart;
   private float rotateUpperLegAngleStart = -60, rotateUpperLegAngle = rotateUpperLegAngleStart;
   private float rotateBodyAngleStart = 30, rotateBodyAngle = rotateBodyAngleStart;
   private float waveLeftAngleStart = 45, waveLeftAngle = waveLeftAngleStart;
   private float waveRightAngleStart = 45, waveRightAngle = waveRightAngleStart;
+  private float headRockAngleStart = -45, headRockAngle = headRockAngleStart;
+
 
   public RobotOne(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
 
@@ -107,7 +109,8 @@ public class RobotOne {
     rotateUpperLeg = new TransformNode("rotateAroundZ("+ rotateUpperLegAngle +")",Mat4Transform.rotateAroundZ(rotateUpperLegAngle));
     rotateBody = new TransformNode("rotateAroundZ("+ rotateBodyAngle +")",Mat4Transform.rotateAroundZ(rotateBodyAngle));
     waveLeft = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(waveLeftAngle));
-    waveRight = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(0));
+    waveRight = new TransformNode("rotate left arm", Mat4Transform.rotateAroundZ(waveRightAngle));
+    headRock = new TransformNode("rock head", Mat4Transform.rotateAroundZ(headRockAngle));
 
 
     root.addChild(rootTranslate);
@@ -130,23 +133,24 @@ public class RobotOne {
                               initialRotationRightArmPosition.addChild(waveRight);
                                 waveRight.addChild(rightArm);
                           body.addChild(translateToHeadPosition);
-                            translateToHeadPosition.addChild(neck);
+                            translateToHeadPosition.addChild(headRock);
+                              headRock.addChild(neck);
                               neck.addChild(translateToEndOfNeck);
                                 translateToEndOfNeck.addChild(spinHeadAround);
                                   spinHeadAround.addChild(head);
-                                    head.addChild(centreRing);
-                                      centreRing.addChild(ring);
-                                        ring.addChild(centreHandleTransforms);
-                                          centreHandleTransforms.addChild(rotateToHandle1Pos);
-                                            rotateToHandle1Pos.addChild(handle1);
-                                          centreHandleTransforms.addChild(rotateToHandle2Pos);
-                                            rotateToHandle2Pos.addChild(handle2);
-                                          centreHandleTransforms.addChild(rotateToHandle3Pos);
-                                            rotateToHandle3Pos.addChild(handle3);
-                                          centreHandleTransforms.addChild(rotateToHandle4Pos);
-                                            rotateToHandle4Pos.addChild(handle4);
-                                          centreHandleTransforms.addChild(rotateToHandle5Pos);
-                                            rotateToHandle5Pos.addChild(handle5);
+                                      head.addChild(centreRing);
+                                        centreRing.addChild(ring);
+                                          ring.addChild(centreHandleTransforms);
+                                            centreHandleTransforms.addChild(rotateToHandle1Pos);
+                                              rotateToHandle1Pos.addChild(handle1);
+                                            centreHandleTransforms.addChild(rotateToHandle2Pos);
+                                              rotateToHandle2Pos.addChild(handle2);
+                                            centreHandleTransforms.addChild(rotateToHandle3Pos);
+                                              rotateToHandle3Pos.addChild(handle3);
+                                            centreHandleTransforms.addChild(rotateToHandle4Pos);
+                                              rotateToHandle4Pos.addChild(handle4);
+                                            centreHandleTransforms.addChild(rotateToHandle5Pos);
+                                              rotateToHandle5Pos.addChild(handle5);
 
 
       root.update();
@@ -207,6 +211,9 @@ public class RobotOne {
 
     waveRightAngle = -1 * waveRightAngleStart * (float) Math.sin(elapsedTime * 0.7f);
     waveRight.setTransform(Mat4Transform.rotateAroundZ(waveRightAngle));
+
+    headRockAngle = headRockAngleStart * (float) Math.sin(elapsedTime * 0.5f);
+    headRock.setTransform(Mat4Transform.rotateAroundZ((headRockAngle)));
 
     root.update(); // IMPORTANT – the scene graph has changed
   }
