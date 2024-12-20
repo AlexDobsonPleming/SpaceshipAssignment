@@ -104,8 +104,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
 
   // this is my code
   private void initialise(GL3 gl) {
-    createRandomNumbers();
-
     textures = new TextureLibrary();
     textures.add(gl, "container_diffuse", "assets/textures/container2.jpg");
     textures.add(gl, "container_specular", "assets/textures/container2_specular.jpg");
@@ -147,7 +145,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     robotTwo.setRobotOneLocationSupplier(robotOne::getLocation);
     robotOne.setDancingSupplier(robotTwo::isCloseToRobotOne);
 
-    lights[0] = new PointLight(gl, this::getPointLightPosition);
+    lights[0] = room.getRoomLight();
     lights[0].setCamera(camera);
 
     lights[1] = robotTwo.getSpotLight();
@@ -191,42 +189,12 @@ public class Spaceship_GLEventListener implements GLEventListener {
 
   public ILight[] getLights() {return lights;}
 
-  // this is lab code
-  // The light's position is continually being changed, so needs to be calculated for each frame.
-  private Vec3 getPointLightPosition() {
-    double elapsedTime = getSeconds()-startTime;
-    float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime*50)));
-    float y = 2.7f;
-    float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime*50)));
-    return new Vec3(x,y,z);   
-    //return new Vec3(5f,3.4f,5f);
-  }
 
-  
-  // ***************************************************
-  /* TIME
-   */ 
-  
   private double startTime;
   
   private double getSeconds() {
     return System.currentTimeMillis()/1000.0;
   }
 
-  // ***************************************************
-  /* An array of random numbers
-   */
-
-  // this is lab code
-  private int NUM_RANDOMS = 1000;
-  private float[] randoms;
-
-  // this is lab code
-  private void createRandomNumbers() {
-    randoms = new float[NUM_RANDOMS];
-    for (int i=0; i<NUM_RANDOMS; ++i) {
-      randoms[i] = (float)Math.random();
-    }
-  }
   
 }

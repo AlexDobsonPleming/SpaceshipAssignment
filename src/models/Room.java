@@ -7,6 +7,7 @@ import com.jogamp.opengl.util.texture.*;
 import tooling.Camera;
 import tooling.ILight;
 import tooling.Light;
+import tooling.PointLight;
 
 /**
  * This class encapsulates rendering the room
@@ -24,11 +25,15 @@ public class Room {
   private Surface windowWall;
   private RepeatingSurface oppositeWall;
 
+  private PointLight roomLight;
+
   private float floorToCeilingHeight = 12f;
   private float floorWidth = 16f;
   private float floorDepth = 32;
 
   public Room(GL3 gl, Camera cameraIn, ILight[] lights, TextureLibrary textures) {
+     roomLight = new PointLight(gl, this::getPointLightPosition);
+
     Texture asphalt = textures.get("asphalt");
 
     Texture rearWallDiffuse = textures.get("alexander_diffuse");
@@ -68,6 +73,13 @@ public class Room {
     oppositeWall = new RepeatingSurface(gl, floorDepth, floorToCeilingHeight, cameraIn, lights, repeating, oppositeWallTransform);
   }
 
+  // this is lab code
+  // The light's position is continually being changed, so needs to be calculated for each frame.
+  private Vec3 getPointLightPosition() {
+    return new Vec3(0,floorToCeilingHeight * 0.8f,0);
+    //return new Vec3(5f,3.4f,5f);
+  }
+
   public void render(GL3 gl) {
 
     floor.render(gl);
@@ -85,4 +97,7 @@ public class Room {
     oppositeWall.dispose(gl);
   }
 
+    public PointLight getRoomLight() {
+        return roomLight;
+    }
 }
