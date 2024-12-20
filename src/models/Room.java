@@ -24,7 +24,7 @@ public class Room {
   private Surface windowWall;
   private RepeatingSurface oppositeWall;
 
-  private float floorToCeilingHeight = 10f;
+  private float floorToCeilingHeight = 12f;
   private float floorWidth = 16f;
   private float floorDepth = 32;
 
