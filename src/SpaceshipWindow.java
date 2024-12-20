@@ -9,6 +9,7 @@ import javax.swing.event.ChangeEvent;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import gmaths.Vec3;
 import tooling.Camera;
 import tooling.ILight;
 
@@ -95,7 +96,7 @@ public class SpaceshipWindow extends JFrame {
     JLabel label = new JLabel("Camera", JLabel.LEFT);
     bottomPanel.add(label);
 
-    JButton cameraToX = new JButton("X");
+    JButton cameraToX = new JButton("Default");
     cameraToX.addActionListener(this::cameraX_click);
     bottomPanel.add(cameraToX);
 

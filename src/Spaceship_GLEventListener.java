@@ -25,7 +25,6 @@ public class Spaceship_GLEventListener implements GLEventListener {
   //lab code
   public Spaceship_GLEventListener(Camera camera) {
     this.camera = camera;
-    this.camera.setPosition(new Vec3(4f,12f,18f));
 
     lights = new Light[2];
   }

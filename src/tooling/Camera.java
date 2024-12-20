@@ -8,12 +8,12 @@ public class Camera {
   public enum Movement {NO_MOVEMENT, LEFT, RIGHT, UP, DOWN, FORWARD, BACK};
   
   private static final float DEFAULT_RADIUS = 25;
-  public static final Vec3 DEFAULT_POSITION = new Vec3(0,0,25);
+  public static final Vec3 DEFAULT_POSITION = new Vec3(3.5f,7.9f,25);
   public static final Vec3 ABOVE_CENTRE_OF_ROOM = new Vec3(0,25,0);
   public static final Vec3 CENTRE_OF_ROOM = new Vec3(3,0,3);
   public static final Vec3 DEFAULT_POSITION_2 = new Vec3(25,0,0);
   public static final Vec3 DEFAULT_POSITION_XYZ = new Vec3(16,16,16);
-  public static final Vec3 DEFAULT_TARGET = new Vec3(0,0,0);
+  public static final Vec3 DEFAULT_TARGET = new Vec3(-2,2,0);
   public static final Vec3 DEFAULT_UP = new Vec3(0,1,0);
   public static final Vec3 DEFAULT_DOWN = new Vec3(0,-1,0);
 
@@ -23,7 +23,7 @@ public class Camera {
   public final float MOUSE_SPEED = 1.0f;
   
   private Vec3 position;
-  private Vec3 target;
+  private Vec3 target = DEFAULT_TARGET;
   private Vec3 up;
   private Vec3 worldUp;
   private Vec3 front;
@@ -103,6 +103,7 @@ public class Camera {
       case FORWARD: position.add(Vec3.multiply(front, KEYBOARD_SPEED)); break;
       case BACK: position.add(Vec3.multiply(front, -KEYBOARD_SPEED)); break;
     }
+    System.out.println(position.toString() + "---------");
   }
   
   public void updateYawPitch(float y, float p) {
