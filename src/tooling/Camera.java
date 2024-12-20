@@ -103,7 +103,6 @@ public class Camera {
       case FORWARD: position.add(Vec3.multiply(front, KEYBOARD_SPEED)); break;
       case BACK: position.add(Vec3.multiply(front, -KEYBOARD_SPEED)); break;
     }
-    System.out.println(position.toString() + "---------");
   }
   
   public void updateYawPitch(float y, float p) {

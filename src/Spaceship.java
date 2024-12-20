@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.management.RuntimeMXBean;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
@@ -52,14 +53,14 @@ public class Spaceship extends JFrame {
     setSize(400, 300);
 
     // move monitor to window 2 so it doesnt hide my code
+    final boolean iAmDebuggingMyCode = false;
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice[] devices = ge.getScreenDevices();
-
-    if (devices.length > 1) {
+    if (iAmDebuggingMyCode && devices.length > 1) {
       // monitor 2
       GraphicsDevice secondMonitor = devices[1];
       Rectangle bounds = secondMonitor.getDefaultConfiguration().getBounds();
-      setLocation(bounds.x + 50, bounds.y + 50); // Offset by 50 for visibility
+      setLocation(bounds.x + 50, bounds.y + 50);
     } else {
       System.out.println("Only one monitor detected.");
     }
