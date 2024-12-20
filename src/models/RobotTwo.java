@@ -167,7 +167,7 @@ public class RobotTwo {
       if (adjustedTime < cumulativeDuration + segmentDurations[i]) {
         if (previousSegment != i) {
           previousSegment = i;
-          rotationRoot.setTransform(Mat4Transform.rotateAroundY(90 * i));
+          rotationRoot.setTransform(Mat4Transform.rotateAroundY(-1 * 90 * i));
           return;
         }
         double segmentProgress = (adjustedTime - cumulativeDuration) / segmentDurations[i];
