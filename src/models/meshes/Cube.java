@@ -1,12 +1,24 @@
 package models.meshes;
 
+/**
+ * This class handles importing texture. A combination of lab code and my own
+ *
+ * @author    Dr Steve Maddock
+ * @email     s.maddock@sheffield.ac.uk
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that the code marked as my own is my own work
+ */
+
+
 public final class Cube implements IMesh {
   
   // ***************************************************
   /* THE DATA
    */
   // anticlockwise/counterclockwise ordering
-  
+
+//lab code
    public static final float[] vertices = new float[] {  // x,y,z, nx,ny,nz, s,t
       -0.5f, -0.5f, -0.5f,  -1, 0, 0,  0.0f, 0.0f,  // 0
       -0.5f, -0.5f,  0.5f,  -1, 0, 0,  1.0f, 0.0f,  // 1
@@ -35,7 +47,8 @@ public final class Cube implements IMesh {
        0.5f,  0.5f, -0.5f,  0,1,0,   1.0f, 1.0f,  // 22
        0.5f,  0.5f,  0.5f,  0,1,0,   1.0f, 0.0f   // 23
    };
-     
+
+    //lab code
    public static final int[] indices =  new int[] {
       0,1,3, // x -ve 
       3,2,0, // x -ve
@@ -51,11 +64,13 @@ public final class Cube implements IMesh {
       18,19,23  // y +ve
   };
 
+   //my code
     @Override
     public float[] getVertices() {
         return vertices;
     }
 
+    //my code
     @Override
     public int[] getIndices() {
         return indices;

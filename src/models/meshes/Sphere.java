@@ -1,18 +1,32 @@
 package models.meshes;
 
+/**
+ * This class handles importing texture. A combination of lab code and my own
+ *
+ * @author    Dr Steve Maddock
+ * @email     s.maddock@sheffield.ac.uk
+ * @author    Alex Dobson-Pleming
+ * @email     adobson-pleming1@sheffield.ac.uk
+ * I declare that the code marked as my own is my own work
+ */
+
+
 public final class Sphere implements IMesh {
   
   // ***************************************************
   /* THE DATA
    */
   // anticlockwise/counterclockwise ordering
- 
+
+  //lab code
   private static final int XLONG = 30;
   private static final int YLAT = 30;
-  
+
+  //lab code
   public static final float[] vertices = createVertices();
   public static final int[] indices = createIndices();
 
+  //lab code
   private static float[] createVertices() {
     double r = 0.5;
     int step = 8;
@@ -43,7 +57,8 @@ public final class Sphere implements IMesh {
     //  System.out.println(vertices[i]+", "+vertices[i+1]+", "+vertices[i+2]);
     //}
   }
-  
+
+  //lab code
   private static int[] createIndices() {
     int[] indices = new int[(XLONG-1)*(YLAT-1)*6];
     for (int j = 0; j<YLAT-1; ++j) {
@@ -65,11 +80,13 @@ public final class Sphere implements IMesh {
     //}
   }
 
+  //my code
   @Override
   public float[] getVertices() {
     return vertices;
   }
 
+  //my code
   @Override
   public int[] getIndices() {
     return indices;
