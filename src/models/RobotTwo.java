@@ -11,7 +11,9 @@ import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
 import tooling.scenegraph.TransformNode;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * This class stores the models.Robot
@@ -40,15 +42,50 @@ public class RobotTwo {
 
   private TransformNode translateRoot, rotationRoot, rotateSpotlight;
 
-  private Vec2[] anchorPoints = {
-          new Vec2(-6.25f, 13.5f),
-          new Vec2(-6.25f, -11f),
-          new Vec2(6.25f, -11f),
-          new Vec2(6.25f, 13.5f),
+  private interface ITraversal {
+    double getDuration();
+    Vec2 getStart();
+    Vec2 getFinish();
+  }
+  private class StraightTraversal implements ITraversal{
+    private Vec2 start;
+    private Vec2 finish;
+    StraightTraversal(Vec2 start, Vec2 finish) {
+      this.start = start; this.finish = finish;
+    }
+
+    public Vec2 getStart() { return start; }
+    public Vec2 getFinish() { return finish; }
+    public double getDuration() {
+      double distance = Math.sqrt(Math.pow(finish.x - start.x, 2) + Math.pow(finish.y - start.y, 2));
+      return distance / speed;
+    }
+  }
+  private static double cornerDuration = 3;
+  private class CornerTraversal implements ITraversal {
+    private Vec2 start;
+    private Vec2 finish;
+    CornerTraversal(Vec2 start, Vec2 finish) {
+      this.start = start; this.finish = finish;
+    }
+    public Vec2 getStart() { return start; }
+    public Vec2 getFinish() { return finish; }
+
+//    private Vec2 centreOfCorner() {
+//      return new Vec2(Math.min(start.x, finish.x))
+//    }
+    public double getDuration() {
+      return cornerDuration;
+    }
+  }
+
+  private ITraversal[] newAnchorPoints = {
+          new StraightTraversal(new Vec2(-6.25f, 13.5f), new Vec2(-6.25f, -11f)),
+          new StraightTraversal(new Vec2(-6.25f, -11f), new Vec2(6.25f, -11f)),
+          new StraightTraversal(new Vec2(6.25f, -11f), new Vec2(6.25f, 13.5f)),
+          new StraightTraversal(new Vec2(6.25f, 13.5f), new Vec2(-6.25f, 13.5f))
   };
   private double speed = 5.0;
-  private double[] segmentDurations;
-  private double totalPathTime = 0;
 
   public RobotTwo(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
     shapes = shapeFactory;
@@ -59,7 +96,6 @@ public class RobotTwo {
 
     sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
 
-    intialiaseTrackTime();
     body_cube = shapes.makeCube(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
     Branch body = new Branch(body_cube, 1f,1.5f, 1f);
     eyeCube = shapes.makeCube(gl, textures.get("mo_eye"), textures.get("mo_eye"));
@@ -84,7 +120,7 @@ public class RobotTwo {
 
 
 
-    translateRoot = new TransformNode("translate root", translateXZ(anchorPoints[0]));
+    translateRoot = new TransformNode("translate root", translateXZ(newAnchorPoints[0].getStart()));
     rotationRoot = new TransformNode("rotation root", Mat4Transform.rotateAroundY(0));
     rotateSpotlight = new TransformNode("rotateAroundY", Mat4Transform.rotateAroundY(0));
 
@@ -141,43 +177,44 @@ public class RobotTwo {
     updateRailwayPosition(elapsedTime);
     rotateSpotlight.setTransform(Mat4Transform.rotateAroundY((angularVelocity * (float)elapsedTime) % 360));
 
-    root.update(); // IMPORTANT – the scene graph has changed
+    root.update();
   }
 
-  public void intialiaseTrackTime() {
-    segmentDurations = new double[anchorPoints.length];
-
-    for (int i = 0; i < anchorPoints.length; i++) {
-      Vec2 p1 = anchorPoints[i];
-      Vec2 p2 = anchorPoints[(i + 1) % anchorPoints.length]; // Loop back to start
-      double distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-      segmentDurations[i] = distance / speed;
-      totalPathTime += segmentDurations[i];
-    }
-  }
+//  public void intialiaseTrackTime() {
+//    segmentDurations = new double[anchorPoints.length];
+//
+//    for (int i = 0; i < anchorPoints.length; i++) {
+//      Vec2 p1 = anchorPoints[i];
+//      Vec2 p2 = anchorPoints[(i + 1) % anchorPoints.length]; // Loop back to start
+//      double distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+//      segmentDurations[i] = distance / speed;
+//      totalPathTime += segmentDurations[i];
+//    }
+//  }
 
   private int previousSegment = -1; // Track the last segment index
 
   public void updateRailwayPosition(double elapsedTime) {
+    double totalPathTime = Arrays.stream(newAnchorPoints).map(ITraversal::getDuration).mapToDouble(Double::doubleValue).sum();
     double adjustedTime = elapsedTime % totalPathTime;
 
     double cumulativeDuration = 0;
 
-    for (int i = 0; i < segmentDurations.length; i++) {
-      if (adjustedTime < cumulativeDuration + segmentDurations[i]) {
+    for (int i = 0; i < newAnchorPoints.length; i++) {
+      if (adjustedTime < cumulativeDuration + newAnchorPoints[i].getDuration()) {
         if (previousSegment != i) {
           previousSegment = i;
           rotationRoot.setTransform(Mat4Transform.rotateAroundY(-1 * 90 * i));
           return;
         }
-        double segmentProgress = (adjustedTime - cumulativeDuration) / segmentDurations[i];
-        Vec2 start = anchorPoints[i];
-        Vec2 end = anchorPoints[(i + 1) % anchorPoints.length];
+        double segmentProgress = (adjustedTime - cumulativeDuration) / newAnchorPoints[i].getDuration();
+        Vec2 start = newAnchorPoints[i].getStart();
+        Vec2 end = newAnchorPoints[i].getFinish();
         Vec2 progressBetweenCorners = linearInterpolate(start, end, (float)segmentProgress);
         translateRoot.setTransform(translateXZ(progressBetweenCorners));
         return;
       }
-      cumulativeDuration += segmentDurations[i];
+      cumulativeDuration +=newAnchorPoints[i].getDuration();
     }
 
   }
