@@ -98,8 +98,8 @@ vec3 CalcSpotlight(Spotlight light, vec3 norm, vec3 aPos, vec3 viewDir) {
     vec3 specular = light.specular * spec * vec3(texture(second_texture, aTexCoord));
 
     // Smooth spotlight edge intensity
-    float epsilon = light.outerCutoff - light.cutoff;
-    float intensity = clamp((theta - light.cutoff) / epsilon, 0.0, 1.0);
+    float epsilon = light.cutoff - light.outerCutoff;
+    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
 
     // Attenuation
     float distance = length(light.position - aPos);
