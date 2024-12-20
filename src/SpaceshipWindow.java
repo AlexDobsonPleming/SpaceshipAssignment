@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
@@ -35,7 +38,7 @@ public class SpaceshipWindow extends JFrame {
   JCheckBox alwaysDancing;
 
   public static void main(String[] args) {
-    SpaceshipWindow window = new SpaceshipWindow("COM3504 Spaceship Assignment - Alexander Dobson-Pleming");
+    SpaceshipWindow window = new SpaceshipWindow("Please watch WALL-E - it's a beautiful film");
     window.getContentPane().setPreferredSize(dimension);
     window.pack();
     window.setVisible(true);
@@ -76,7 +79,15 @@ public class SpaceshipWindow extends JFrame {
         JMenuItem quitItem = new JMenuItem("Quit");
         quitItem.addActionListener(this::quit_click);
         fileMenu.add(quitItem);
+      JMenu helpMenu = new JMenu("Help");
+        JMenuItem attributionsItem = new JMenuItem("Attributions");
+        JMenuItem aboutItem = new JMenuItem("About");
+        attributionsItem.addActionListener(this::attributions_click);
+        aboutItem.addActionListener(this::quit_click);
+        helpMenu.add(attributionsItem);
+        helpMenu.add(aboutItem);
     menuBar.add(fileMenu);
+    menuBar.add(helpMenu);
 
     //this is my code
     
@@ -142,6 +153,35 @@ public class SpaceshipWindow extends JFrame {
     });
     animator = new FPSAnimator(canvas, 60);
     animator.start();
+  }
+
+  private void attributions_click(ActionEvent actionEvent) {
+    JDialog dialog = new JDialog();
+    dialog.setTitle("Attribution");
+    dialog.setSize(500, 400);
+    dialog.setLocationRelativeTo(null);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+    JTextArea textArea = new JTextArea();
+    textArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(textArea);
+
+    String filePath = "assets/textures/attribution.txt";
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        textArea.append(line + "\n");
+      }
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(dialog, "Error reading file: " + e.getMessage(),
+              "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // Add the scroll pane to the dialog
+    dialog.add(scrollPane, BorderLayout.CENTER);
+
+    // Make the dialog visible
+    dialog.setVisible(true);
   }
 
   public void cameraX_click(ActionEvent e) {

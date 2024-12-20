@@ -6,6 +6,7 @@ import gmaths.Mat4Transform;
 import gmaths.Vec2;
 import gmaths.Vec3;
 import tooling.Model;
+import tooling.SpotLight;
 import tooling.scenegraph.NameNode;
 import tooling.scenegraph.SGNode;
 import tooling.scenegraph.TransformNode;
@@ -25,10 +26,17 @@ public class RobotTwo {
 
   private Shapes shapes;
   private Model sphere;
-  private Model cube;
+  private Model body_cube, eyeCube, antennae_cube, spotlight_housing_cube, bulb;
   private SGNode root;
 
-  private Branch spotlight;
+  private SpotLight spotLight;
+
+  public SpotLight getSpotLight() {
+    return spotLight;
+  }
+
+  private Branch spotlightHousing;
+  private Branch spotlightBulb;
 
   private TransformNode translateRoot, rotationRoot, rotateSpotlight;
 
@@ -45,28 +53,35 @@ public class RobotTwo {
   public RobotTwo(GL3 gl, Shapes shapeFactory, TextureLibrary textures) {
     shapes = shapeFactory;
 
-
+    spotLight = new SpotLight(gl, this::getSpotlightPosition, this::getSpotlightDirection);
 
     root = new NameNode("robot two structure");
 
     sphere = shapes.makeSphere(gl, textures.get("arrow"), textures.get("jade_specular"));
-    cube = shapes.makeCube(gl, textures.get("arrow"), textures.get("jade_specular"));
 
     intialiaseTrackTime();
+    body_cube = shapes.makeCube(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
+    Branch body = new Branch(body_cube, 1f,1.5f, 1f);
+    eyeCube = shapes.makeCube(gl, textures.get("mo_eye"), textures.get("mo_eye"));
+    Branch leftEye = new Branch(eyeCube, 0.3f, 0.3f, 0.3f);
+    Branch rightEye = new Branch(eyeCube, 0.3f, 0.3f, 0.3f);
+    antennae_cube = shapes.makeCube(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
+    Branch antennae = new Branch(antennae_cube, 0.1f, 1f, 0.1f);
+    spotlight_housing_cube = shapes.makeCube(gl, textures.get("bulb_housing"), textures.get("auto_default_specular"));
+    spotlightHousing = new Branch(spotlight_housing_cube, 0.3f, 0.3f, 0.3f);
 
-    Branch body = new Branch(cube, 1.5f,1f, 1f);
-    Branch leftEye = new Branch(sphere, 0.3f, 0.3f, 0.3f);
-    Branch rightEye = new Branch(sphere, 0.3f, 0.3f, 0.3f);
-    Branch antennae = new Branch(cube, 0.1f, 1f, 0.1f);
-    spotlight = new Branch(cube, 0.3f, 0.3f, 0.3f);
+    bulb = shapes.makeLightSphere(gl, textures.get("auto_default"), textures.get("auto_default_specular"));
+    spotlightBulb = new Branch(bulb, 0.2f, 0.2f, 0.2f);
 
     TransformNode translateAboveBody = new TransformNode("translate above base", Mat4Transform.translate(0, body.scaleY, 0));
     TransformNode baseRotation = new TransformNode("base rotation", Mat4Transform.rotateAroundY(90));
 
-    TransformNode translateToLeftEye = new TransformNode("translate left eye",Mat4Transform.translate(0, body.scaleY,0));
-    TransformNode translateToRightEye = new TransformNode("translate right eye",Mat4Transform.translate(0, body.scaleY,0));
+    TransformNode translateToLeftEye = new TransformNode("translate left eye",Mat4Transform.translate(body.scaleX / 2, body.scaleY / 2,body.scaleZ / 4));
+    TransformNode translateToRightEye = new TransformNode("translate right eye",Mat4Transform.translate(body.scaleX / 2, body.scaleY / 2,-1 * body.scaleZ / 4));
 
     TransformNode translateAboveAntennae = new TransformNode("translate right eye",Mat4Transform.translate(0, antennae.scaleY,0));
+    TransformNode translateToBulbPosition = new TransformNode("translate to bulb position", Mat4Transform.translate(0, spotlightHousing.scaleY / 5, spotlightHousing.scaleZ / 3));
+
 
 
     translateRoot = new TransformNode("translate root", translateXZ(anchorPoints[0]));
@@ -82,7 +97,9 @@ public class RobotTwo {
               translateAboveBody.addChild(antennae);
                 antennae.addChild(translateAboveAntennae);
                   translateAboveAntennae.addChild(rotateSpotlight);
-                    rotateSpotlight.addChild(spotlight);
+                    rotateSpotlight.addChild(spotlightHousing);
+                      spotlightHousing.addChild(translateToBulbPosition);
+                        translateToBulbPosition.addChild(spotlightBulb);
             body.addChild(translateToLeftEye);
               translateToLeftEye.addChild(leftEye);
             body.addChild(translateToRightEye);
@@ -173,11 +190,11 @@ public class RobotTwo {
   }
 
   public Vec3 getSpotlightPosition() {
-    return spotlight.getNode().getPosition();
+    return spotlightHousing.getNode().getPosition();
   }
 
   public Vec3 getSpotlightDirection() {
-    return spotlight.getNode().getDirection();
+    return spotlightHousing.getNode().getDirection();
   }
 
   public void dispose(GL3 gl) {

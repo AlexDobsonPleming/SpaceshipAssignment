@@ -149,6 +149,8 @@ public class Spaceship_GLEventListener implements GLEventListener {
     textures.add(gl, "auto_default_specular", "assets/textures/auto_default_specular.png");
     textures.add(gl, "auto_body", "assets/textures/auto_body.png");
     textures.add(gl, "auto_base", "assets/textures/auto_base.png");
+    textures.add(gl, "mo_eye", "assets/textures/mo_eye.png");
+    textures.add(gl, "bulb_housing", "assets/textures/bulb_housing.png");
 
     shapes = new Shapes(camera, lights);
 
@@ -167,11 +169,7 @@ public class Spaceship_GLEventListener implements GLEventListener {
     lights[0] = new PointLight(gl, this::getPointLightPosition);
     lights[0].setCamera(camera);
 
-    lights[1] = new SpotLight(
-            gl,
-            robotTwo::getSpotlightPosition,
-            robotTwo::getSpotlightDirection
-            );
+    lights[1] = robotTwo.getSpotLight();
     lights[1].setCamera(camera);
 
     globe = new Globe(gl, shapes, textures);
