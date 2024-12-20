@@ -37,7 +37,7 @@ public class SolarSystem {
     Branch earth = new Branch(earthSphere, 2f,2f,2f);
     Branch moon = new Branch(moonSphere, 0.5f,0.5f,0.5f);
 
-    TransformNode translateSystem = new TransformNode("translate base", Mat4Transform.translate(-30, 7, -20));
+    TransformNode translateSystem = new TransformNode("translate base", Mat4Transform.translate(-50, 7, -50));
 
     TransformNode translateToCentreOfSun = new TransformNode("centre of sun", Mat4Transform.translate(0, sun.scaleY / 2, 0));
     TransformNode translateIntoEarthOrbit = new TransformNode("translate",Mat4Transform.translate(10f,0,0));
@@ -79,14 +79,16 @@ public class SolarSystem {
 
 
   public void updateAnimation(double elapsedTime) {
+    float sunSpinSpeed = 5f;
+    float earthOrbitSpeed = 20f;
     float angularVelocity = 45.0f;
 
-    sunRotate.setTransform(Mat4Transform.rotateAroundY(-1 * (angularVelocity * (float)elapsedTime) % 360));
-    earthOrbit.setTransform(Mat4Transform.rotateAroundY(-1 * (angularVelocity * (float)elapsedTime) % 360));
+    sunRotate.setTransform(Mat4Transform.rotateAroundY(-1 * (sunSpinSpeed * (float)elapsedTime) % 360));
+    earthOrbit.setTransform(Mat4Transform.rotateAroundY(-1 * (earthOrbitSpeed * (float)elapsedTime) % 360));
     earthRotate.setTransform(Mat4Transform.rotateAroundY(-1 * (angularVelocity * (float)elapsedTime) % 360));
 
     moonOrbit.setTransform(Mat4Transform.rotateAroundY(-1 * (angularVelocity * (float)elapsedTime) % 360));
-    moonRotate.setTransform(Mat4Transform.rotateAroundY(-1 * (angularVelocity * (float)elapsedTime) % 360));
+    moonRotate.setTransform(Mat4Transform.rotateAroundY( (angularVelocity * (float)elapsedTime) % 360));
 
     root.update();
   }
