@@ -28,9 +28,6 @@ public class Room {
   public Room(GL3 gl, Camera cameraIn, ILight[] lights, TextureLibrary textures) {
      roomLight = new PointLight(gl, this::getPointLightPosition);
 
-    Texture asphalt = textures.get("asphalt");
-
-
 
     Texture floorTexture = textures.get("floor");
     floor = new Surface(gl, floorWidth, floorDepth, cameraIn, lights, floorTexture, Mat4Transform.translate(new Vec3()));
