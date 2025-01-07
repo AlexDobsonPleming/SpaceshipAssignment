@@ -137,22 +137,6 @@ public class Spacecraft extends JFrame {
     });
     bottomPanel.add(lightControlPanel);
 
-    JLabel alwaysDancingLabel = new JLabel("force dance:");
-    alwaysDancing = new JCheckBox();
-
-    alwaysDancing.addActionListener(this::alwaysDance_change);
-    bottomPanel.add(alwaysDancingLabel);
-    bottomPanel.add(alwaysDancing);
-    glEventListener.addPostInitRunner(() -> {alwaysDancing.setSelected(glEventListener.isAlwaysDancing());});
-
-    JLabel robotTwoMovingLabel = new JLabel("robot 2:");
-    robotTwoMoving = new JCheckBox();
-
-    robotTwoMoving.addActionListener(this::robotTwoMoving_change);
-    bottomPanel.add(robotTwoMovingLabel);
-    bottomPanel.add(robotTwoMoving);
-    glEventListener.addPostInitRunner(() -> {robotTwoMoving.setSelected(glEventListener.isMOMoving());});
-
     this.add(bottomPanel, BorderLayout.SOUTH);
     
     addWindowListener(new WindowAdapter() {
@@ -236,12 +220,6 @@ public class Spacecraft extends JFrame {
   public void cameraXYZ_click(ActionEvent e) {
     camera.setCamera(Camera.CameraType.XYZ);
     canvas.requestFocusInWindow();
-  }
-  public void alwaysDance_change(ActionEvent e) {
-    glEventListener.setAlwaysDancing(alwaysDancing.isSelected());
-  }
-  private void robotTwoMoving_change(ActionEvent actionEvent) {
-    glEventListener.setMOMoving(robotTwoMoving.isSelected());
   }
   public void quit_click(ActionEvent e) {
     System.exit(0);
