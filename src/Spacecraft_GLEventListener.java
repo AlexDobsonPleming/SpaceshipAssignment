@@ -96,6 +96,8 @@ public class Spacecraft_GLEventListener implements GLEventListener {
   private void initialise(GL3 gl) {
     textures = new TextureLibrary();
     textures.add(gl, "floor", "assets/textures/limestone.jpg");
+    textures.add(gl, "limestone", "assets/textures/limestoneBaked.png");
+    textures.add(gl, "planks", "assets/textures/woodBaked.png");
     textures.addRepeating(gl, "repeating_small", "assets/textures/repeating_small.png");
 
     shapes = new Shapes(camera, lights);

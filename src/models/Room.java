@@ -29,7 +29,7 @@ public class Room {
      roomLight = new PointLight(gl, this::getPointLightPosition);
 
 
-    Texture floorTexture = textures.get("floor");
+    Texture floorTexture = textures.get("limestone");
     floor = new Surface(gl, floorWidth, floorDepth, cameraIn, lights, floorTexture, Mat4Transform.translate(new Vec3()));
 
 
